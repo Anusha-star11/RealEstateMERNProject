@@ -1,7 +1,8 @@
 {
   "dependencies": {
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
-    "@fortawesome/react-fontawesome": "^0.2.2"
+    "@fortawesome/react-fontawesome": "^0.2.2",
+    "react-responsive-carousel": "^3.2.23"
   },
   "devDependencies": {
     "gh-pages": "^6.1.1"

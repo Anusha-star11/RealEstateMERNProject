@@ -1,20 +1,90 @@
-import React from "react";
+import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowCircleRight } from '@fortawesome/free-solid-svg-icons';
+import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import { faDumbbell, faRunning, faSwimmer, faCar, faDice, faShieldAlt, faChild, faTableTennis } from '@fortawesome/free-solid-svg-icons'; 
 
-export const Home = () => (
-  <section
-    id="home"
-    className="min-h-screen bg-cover bg-center bg-no-repeat flex items-center justify-center p-4"
-    style={{ backgroundImage: "url('https://images.unsplash.com/photo-1605146769289-440113cc3d00?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cmVhbCUyMGVzdGF0ZXxlbnwwfHwwfHx8MA%3D%3D')" }}
-  >
-    <div className="bg-black bg-opacity-50 p-6 sm:p-10 rounded-lg max-w-lg w-full">
-      <h2 className="text-2xl sm:text-4xl font-bold text-white text-center">Welcome to Our Real Estate</h2>
-      <p className="mt-4 text-white text-center text-sm sm:text-base">Find your dream property here!</p>
+export const Home = () => {
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  const slides = [
+    {
+      title: "Resale / Land Owner Sale",
+      subtitle: "Exclusive Realty",
+      backgroundImage: "https://media.istockphoto.com/id/2155901088/photo/exterior-view-of-a-contemporary-new-home-in-los-angeles.jpg?s=1024x1024&w=is&k=20&c=TUqgqAPUlBrs2kaZFN6dkUNyEcrkNclVh3f-p7vcQNU=",
+    },
+    {
+      title: "Land Owner Sale",
+      subtitle: "Realty",
+      backgroundImage: "https://media.istockphoto.com/id/2155900028/photo/modern-new-construction-home-in-los-angeles.jpg?s=1024x1024&w=is&k=20&c=sG83gG3AQdN13hHyyL9ACJaPHiR9bNW393woWisfY9A=",
+    },
+    {
+      title: "Resale / Land Owner Sale",
+      subtitle: "Exclusive Realty",
+      backgroundImage: "https://media.istockphoto.com/id/1498811925/photo/real-estate-agent-or-real-estate-agent-was-holding-the-key-to-the-new-landlord-tenant-or.jpg?s=1024x1024&w=is&k=20&c=_SSNLW2TNTL03oHWFAVbKWB5yLFH0LUqLSuq5M6B3yQ=",
+    },
+    // Add more slides as needed
+  ];
+
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % slides.length);
+  };
+
+  const prevSlide = () => {
+    setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
+  };
+
+  useEffect(() => {
+    const timer = setInterval(nextSlide, 5000); // Auto-advance every 5 seconds
+    return () => clearInterval(timer);
+  }, []);
+
+  return (
+    <section id="home">
+    <div className="relative w-full h-[300px] sm:h-[400px] md:h-[500px] lg:h-[600px] overflow-hidden">
+      {slides.map((slide, index) => (
+        <div
+          key={index}
+          className={`absolute top-0 left-0 w-full h-full transition-opacity duration-500 ease-in-out ${
+            index === currentSlide ? 'opacity-100' : 'opacity-0'
+          }`}
+        >
+          <img
+            src={slide.backgroundImage}
+            alt={slide.title}
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-black bg-opacity-40 flex flex-col justify-center items-center text-white p-4">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-2 sm:mb-4 text-center">
+              {slide.title}
+            </h1>
+            <p className="text-lg sm:text-xl md:text-2xl mb-4 sm:mb-6 md:mb-8 text-center">
+              {slide.subtitle}
+            </p>
+            <button className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded text-sm sm:text-base transition duration-300 ease-in-out transform hover:scale-105">
+              Book Now
+            </button>
+          </div>
+        </div>
+      ))}
+      <button
+        onClick={prevSlide}
+        className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full hidden sm:block"
+      >
+        &#10094;
+      </button>
+      <button
+        onClick={nextSlide}
+        className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full hidden sm:block"
+      >
+        &#10095;
+      </button>
     </div>
-  </section>
-);
+    </section>
+  );
+};
+
+
 
 export const Overview = () => (
   <section id="overview" className="min-h-screen bg-white p-4 sm:p-10 flex flex-col md:flex-row items-center justify-between">
