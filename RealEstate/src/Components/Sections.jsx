@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowCircleRight } from '@fortawesome/free-solid-svg-icons';
-import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
+// import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import { faDumbbell, faRunning, faSwimmer, faCar, faDice, faShieldAlt, faChild, faTableTennis } from '@fortawesome/free-solid-svg-icons'; 
+import { motion } from "framer-motion";
 
 export const Home = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -87,8 +88,18 @@ export const Home = () => {
 
 
 export const Overview = () => (
-  <section id="overview" className="min-h-screen bg-white p-4 sm:p-10 flex flex-col md:flex-row items-center justify-between">
-    <div className="w-full md:w-1/2 p-4 md:p-6 mb-6 md:mb-0">
+  <section
+    id="overview"
+    className="min-h-screen bg-white p-4 sm:p-10 flex flex-col md:flex-row items-center justify-between"
+  >
+    {/* Text Section with Scroll Animation */}
+    <motion.div
+      className="w-full md:w-1/2 p-4 md:p-6 mb-6 md:mb-0"
+      initial={{ opacity: 0, x: -100, rotateY: 15, scale: 0.9 }}
+      whileInView={{ opacity: 1, x: 0, rotateY: 0, scale: 1 }}
+      transition={{ duration: 0.8 }}
+      viewport={{ once: true }}
+    >
       <h2 className="text-3xl sm:text-4xl font-bold mb-4">Overview</h2>
       <p className="text-base sm:text-lg mb-6">
         Our real estate offers prime locations and modern designs to suit your lifestyle. Whether
@@ -102,14 +113,23 @@ export const Overview = () => (
         energy-efficient designs, and green spaces that contribute to a healthier environment for
         you and your family. Explore our exclusive offerings and discover the home of your future.
       </p>
-    </div>
-    <div className="w-full md:w-1/2 flex justify-center">
-      <img
+    </motion.div>
+
+    {/* Image Section with Scroll and Hover Animation */}
+    <motion.div
+      className="w-full md:w-1/2 flex justify-center"
+      initial={{ opacity: 0, x: 100, rotateY: -15, scale: 0.9 }}
+      whileInView={{ opacity: 1, x: 0, rotateY: 0, scale: 1 }}
+      transition={{ duration: 0.8 }}
+      viewport={{ once: true }}
+    >
+      <motion.img
         src="https://images.unsplash.com/photo-1502005229762-cf1b2da7c5d6?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
         alt="Real Estate Overview"
-        className="rounded-lg w-full max-w-md md:max-w-lg h-auto object-cover"
+        className="rounded-lg w-full max-w-md md:max-w-lg h-auto object-cover transform scale-90 hover:scale-100 transition-transform duration-500"
+        whileHover={{ scale: 1.1 }}
       />
-    </div>
+    </motion.div>
   </section>
 );
 
@@ -212,7 +232,7 @@ export const Contact = () => (
         </div>
         <div className="mt-6 sm:mt-8 flex justify-center">
           <button className="bg-yellow-400 hover:bg-yellow-500 text-gray-900 py-2 sm:py-3 px-6 sm:px-8 rounded-full font-bold shadow-md text-sm sm:text-base">
-            <a href="tel:+919230967484">Call Now</a>
+            <a href="tel:+919123456789">Call Now</a>
           </button>
         </div>
       </div>
