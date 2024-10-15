@@ -395,11 +395,11 @@ export const Amenities = () => (
 );
 
 export const Contact = () => (
-  <section id="contact" className="min-h-screen bg-gray-100 p-4 sm:p-10 flex flex-col lg:flex-row justify-between">
+  <section id="contact" className="min-h-screen bg-gray-100 p-4 sm:p-10 flex flex-col lg:flex-row justify-between items-stretch">
     
     {/* Contact Details Section with Scroll Animation */}
     <motion.div
-      className="w-full lg:w-1/2 p-6 sm:p-8 bg-gradient-to-r from-gray-600 to-gray-400 text-white rounded-lg shadow-xl"
+      className="w-full lg:w-1/2 p-6 sm:p-8 bg-gradient-to-r from-gray-600 to-gray-400 text-white rounded-lg shadow-xl flex flex-col justify-center"
       initial={{ opacity: 0, x: -100 }}
       whileInView={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.8 }}
@@ -436,14 +436,13 @@ export const Contact = () => (
 
     {/* Google Map Section with Scroll Animation */}
     <motion.div
-      className="w-full lg:w-1/2 p-4 lg:p-6 mb-6 lg:mb-0"
+      className="w-full lg:w-1/2 p-6 sm:p-8 bg-white rounded-lg shadow-xl flex justify-center items-center"
       initial={{ opacity: 0, x: 100 }}
       whileInView={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.8 }}
       viewport={{ once: true }}
     >
-      <h1 className="text-2xl font-bold mb-4">Get in Touch</h1>
-      <div className="w-full h-96">
+      <div className="w-full h-full">
         <iframe
           title="Gachibowli Location"
           src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3806.8498970533634!2d78.35420987462487!3d17.446043788090034!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bcb93bdaafdc5d1%3A0xe1517c7804210e33!2sGachibowli%2C%20Hyderabad%2C%20Telangana!5e0!3m2!1sen!2sin!4v1631003576350!5m2!1sen!2sin"

@@ -1,6 +1,7 @@
 import React from "react";
 import Header from "./Components/Header"
 import { Home, Overview, Achievements,  Contact, Projects } from './Components/Sections'
+import Footer from "./Components/Footer";
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
       <Overview />
       <Achievements />
       <Contact />
+      <Footer/>
     </div>
   );
 }
