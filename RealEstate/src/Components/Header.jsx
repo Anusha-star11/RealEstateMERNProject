@@ -23,10 +23,10 @@ const Header = () => {
         <h1 className="text-xl font-bold">RealEstateApp</h1>
         <div className="hidden md:flex space-x-6">
           <button onClick={() => scrollToSection("home")} className="hover:underline">Home</button>
-          <button onClick={() => scrollToSection("overview")} className="hover:underline">Overview</button>
           <button onClick={() => scrollToSection("projects")} className="hover:underline">Projects</button>
-          <button onClick={() => scrollToSection("highlights")} className="hover:underline">Highlights</button>
-          <button onClick={() => scrollToSection("amenities")} className="hover:underline">Amenities</button>
+          <button onClick={() => scrollToSection("overview")} className="hover:underline">About Us</button>
+          <button onClick={() => scrollToSection("achievements")} className="hover:underline">Achievements</button>
+          {/* <button onClick={() => scrollToSection("amenities")} className="hover:underline">Amenities</button> */}
           <button onClick={() => scrollToSection("contact")} className="hover:underline">Contact Us</button>
         </div>
         <div className="md:hidden">
@@ -51,10 +51,10 @@ const Header = () => {
       {isOpen && (
         <div className="md:hidden bg-blue-600 text-white p-4">
           <button onClick={() => scrollToSection("home")} className="block py-2">Home</button>
-          <button onClick={() => scrollToSection("overview")} className="block py-2">Overview</button>
           <button onClick={() => scrollToSection("projects")} className="block py-2">Projects</button>
-          <button onClick={() => scrollToSection("highlights")} className="block py-2">Highlights</button>
-          <button onClick={() => scrollToSection("amenities")} className="block py-2">Amenities</button>
+          <button onClick={() => scrollToSection("overview")} className="block py-2">About Us</button>
+          <button onClick={() => scrollToSection("achievements")} className="block py-2">Achievements</button>
+          {/* <button onClick={() => scrollToSection("amenities")} className="block py-2">Amenities</button> */}
           <button onClick={() => scrollToSection("contact")} className="block py-2">Contact Us</button>
         </div>
       )}

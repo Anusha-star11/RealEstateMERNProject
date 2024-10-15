@@ -3,6 +3,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowCircleRight } from '@fortawesome/free-solid-svg-icons';
 // import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import { faDumbbell, faRunning, faSwimmer, faCar, faDice, faShieldAlt, faChild, faTableTennis } from '@fortawesome/free-solid-svg-icons'; 
+import { faBriefcase, faProjectDiagram, faUsers, faAward, faSmile, faGlobe } from '@fortawesome/free-solid-svg-icons';
+import CountUp from 'react-countup';
 import { motion } from "framer-motion";
 
 export const Home = () => {
@@ -100,7 +102,7 @@ export const Overview = () => (
       transition={{ duration: 0.8 }}
       viewport={{ once: true }}
     >
-      <h2 className="text-3xl sm:text-4xl font-bold mb-4">Overview</h2>
+      <h2 className="text-3xl sm:text-4xl font-bold mb-4">About Us</h2>
       <p className="text-base sm:text-lg mb-6">
         Our real estate offers prime locations and modern designs to suit your lifestyle. Whether
         you're looking for a luxurious villa, a family home, or a smart apartment, we provide
@@ -133,45 +135,219 @@ export const Overview = () => (
   </section>
 );
 
-export const Highlights = () => (
-  <section id="highlights" className="min-h-screen bg-gray-100 p-4 sm:p-10 flex flex-col md:flex-row items-center justify-between">
-    <div className="w-full md:w-1/2 flex justify-center mb-6 md:mb-0">
-      <img
-        src="https://plus.unsplash.com/premium_photo-1661963546658-3bb26361ca54?q=80&w=1562&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-        alt="Highlight Image"
-        className="rounded-lg w-full max-w-md md:max-w-lg h-auto object-cover"
-      />
-    </div>
-    <div className="w-full md:w-1/2 p-4 md:p-6">
-      <h2 className="text-3xl sm:text-4xl font-bold mb-4">Highlights</h2>
-      <ul className="custom-list text-base sm:text-lg">
-        <li className="mb-4 flex items-center">
-          <FontAwesomeIcon icon={faArrowCircleRight} className="mr-4 text-gray-600" />
-          Spacious living areas designed for comfort and style.
-        </li>
-        <li className="mb-4 flex items-center">
-          <FontAwesomeIcon icon={faArrowCircleRight} className="mr-4 text-gray-600" />
-          Top-tier appliances and premium quality materials throughout.
-        </li>
-        <li className="mb-4 flex items-center">
-          <FontAwesomeIcon icon={faArrowCircleRight} className="mr-4 text-gray-600" />
-          Elegant interiors with contemporary design aesthetics.
-        </li>
-        <li className="mb-4 flex items-center">
-          <FontAwesomeIcon icon={faArrowCircleRight} className="mr-4 text-gray-600" />
-          Exclusive access to world-class amenities and green spaces.
-        </li>
-      </ul>
-    </div>
-  </section>
-);
+
+export const Projects = () => {
+  const [categoryFilter, setCategoryFilter] = useState('All');
+  
+  const categories = [
+    { label: 'ALL', value: 'All' },
+    { label: 'APPARTMENTS', value: 'Apartments' },
+    { label: 'VILLAS', value: 'Villas' },
+    { label: 'COMMUNITY', value: 'Community' }
+  ];
+
+  const projects = [
+    {
+      id: 1,
+      title: 'Project 1',
+      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+      image: 'https://storage.googleapis.com/a1aa/image/arpm9V3KVyZZNhGujkQ6M5wfSHJ5Enpv9MNRQclcuceVm7mTA.jpg',
+      category: 'Apartments',
+    },
+    {
+      id: 2,
+      title: 'Project 2',
+      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+      image: 'https://storage.googleapis.com/a1aa/image/npBMWYBfpQXXGSV93VVOlqPKHhefVhfeQW86jn9Hr8FAYc3cC.jpg',
+      category: 'Villas',
+    },
+    {
+      id: 3,
+      title: 'Project 3',
+      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+      image: 'https://storage.googleapis.com/a1aa/image/mSRcUla98B44DN3jJ7Ej0e6uYkLv1IjrwFFQJhFIfN4co7mTA.jpg',
+      category: 'Community',
+    },
+    {
+      id: 4,
+      title: 'Project 4',
+      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+      image: 'https://storage.googleapis.com/a1aa/image/kpffWOTdkXpLpUgCBkhaHmfjxuTbqZ0JKK1e8v5FeKHb7c3cC.jpg',
+      category: 'Apartments',
+    },
+    {
+      id: 5,
+      title: 'Project 5',
+      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+      image: 'https://storage.googleapis.com/a1aa/image/Uxh9jzjl8uYxHxAMO91trj84nERoIe88dnGMBKI8ZIl7wdzJA.jpg',
+      category: 'Villas',
+    },
+    {
+      id: 6,
+      title: 'Project 6',
+      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+      image: 'https://storage.googleapis.com/a1aa/image/oLKo17S29b7zMtWw53BJhIdMfP3nbTNA3W0vxefp0KYCQ3NnA.jpg',
+      category: 'Community',
+    },
+  ];
+
+  const filteredProjects = categoryFilter === 'All' 
+    ? projects 
+    : projects.filter(project => project.category === categoryFilter);
+
+  return (
+    <section id="projects" className="py-12 bg-gray-100">
+      <div className="container mx-auto p-4">
+        <h2 className="text-3xl font-bold text-center mb-8">Our Catalogue</h2>
+
+        {/* Category Tabs */}
+        <div className="flex justify-center mb-8">
+          {categories.map((category) => (
+            <button
+              key={category.value}
+              onClick={() => setCategoryFilter(category.value)}
+              className={`px-4 py-2 mx-2 text-sm font-medium rounded-full ${
+                categoryFilter === category.value
+                  ? 'bg-orange-500 text-white'
+                  : 'bg-gray-200 text-gray-700'
+              } transition-colors duration-300`}
+            >
+              {category.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Projects Grid with Scroll Animation */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {filteredProjects.map((project) => (
+            <motion.div
+              key={project.id}
+              className="bg-white rounded-lg shadow-md p-2"
+              initial={{ opacity: 0, y: 50 }} // Starting state: slightly below and transparent
+              whileInView={{ opacity: 1, y: 0 }} // End state: fully visible and in position
+              transition={{ duration: 0.9, ease: 'easeOut' }} // Animation speed and easing
+              viewport={{ once: true }} // Ensures the animation only happens once
+            >
+              <img
+                src={project.image}
+                alt={project.title}
+                className="w-full h-40 object-cover mb-2 rounded-lg"
+              />
+              <h3 className="text-md font-bold mb-1">{project.title}</h3>
+              <p className="text-gray-600 text-sm mb-2">{project.description}</p>
+              <span className="text-gray-600 font-semibold text-sm">{project.category}</span>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+// export const Highlights = () => (
+//   <section id="highlights" className="min-h-screen bg-gray-100 p-4 sm:p-10 flex flex-col md:flex-row items-center justify-between">
+    
+//     {/* Image Section with Scroll Animation */}
+//     <motion.div
+//       className="w-full md:w-1/2 flex justify-center mb-6 md:mb-0"
+//       initial={{ opacity: 0, x: -100 }}
+//       whileInView={{ opacity: 1, x: 0 }}
+//       transition={{ duration: 0.8 }}
+//       viewport={{ once: true }}
+//     >
+//       <motion.img
+//         src="https://plus.unsplash.com/premium_photo-1661963546658-3bb26361ca54?q=80&w=1562&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+//         alt="Highlight Image"
+//         className="rounded-lg w-full max-w-md md:max-w-lg h-auto object-cover"
+//       />
+//     </motion.div>
+
+//     {/* Text Section with Scroll Animation */}
+//     <motion.div
+//       className="w-full md:w-1/2 p-4 md:p-6"
+//       initial={{ opacity: 0, x: 100 }}
+//       whileInView={{ opacity: 1, x: 0 }}
+//       transition={{ duration: 0.8 }}
+//       viewport={{ once: true }}
+//     >
+//       <h2 className="text-3xl sm:text-4xl font-bold mb-4">Highlights</h2>
+//       <ul className="custom-list text-base sm:text-lg">
+//         <motion.li className="mb-4 flex items-center" whileHover={{ scale: 1.05 }}>
+//           <FontAwesomeIcon icon={faArrowCircleRight} className="mr-4 text-gray-600" />
+//           Spacious living areas designed for comfort and style.
+//         </motion.li>
+//         <motion.li className="mb-4 flex items-center" whileHover={{ scale: 1.05 }}>
+//           <FontAwesomeIcon icon={faArrowCircleRight} className="mr-4 text-gray-600" />
+//           Top-tier appliances and premium quality materials throughout.
+//         </motion.li>
+//         <motion.li className="mb-4 flex items-center" whileHover={{ scale: 1.05 }}>
+//           <FontAwesomeIcon icon={faArrowCircleRight} className="mr-4 text-gray-600" />
+//           Elegant interiors with contemporary design aesthetics.
+//         </motion.li>
+//         <motion.li className="mb-4 flex items-center" whileHover={{ scale: 1.05 }}>
+//           <FontAwesomeIcon icon={faArrowCircleRight} className="mr-4 text-gray-600" />
+//           Exclusive access to world-class amenities and green spaces.
+//         </motion.li>
+//       </ul>
+//     </motion.div>
+
+//   </section>
+// );
+
+
+export const Achievements = () => {
+  const achievements = [
+    { icon: faBriefcase, title: 'Years of Experience', value: 10, bgColor: 'from-purple-500 to-purple-700' },
+    { icon: faProjectDiagram, title: 'Projects Completed', value: 120, bgColor: 'from-green-500 to-green-700' },
+    { icon: faUsers, title: 'Clients Worked With', value: 50, bgColor: 'from-blue-500 to-blue-700' },
+    { icon: faAward, title: 'Awards Won', value: 8, bgColor: 'from-pink-500 to-pink-700' },
+    { icon: faSmile, title: 'Satisfied Customers', value: 500, bgColor: 'from-yellow-500 to-yellow-700' },
+    { icon: faGlobe, title: 'Countries Served', value: 15, bgColor: 'from-red-500 to-red-700' },
+  ];
+
+  return (
+    <section id="achievements" className="min-h-screen bg-gray-100 p-4 sm:p-10 text-center">
+      <h2 className="text-3xl sm:text-4xl font-bold mb-8 text-gray-800">Our Achievements</h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        {achievements.map((achievement, index) => (
+          <motion.div
+            key={index}
+            className={`p-6 bg-gradient-to-r ${achievement.bgColor} text-white rounded-lg shadow-lg flex flex-col items-center justify-center`}
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+          >
+            <FontAwesomeIcon icon={achievement.icon} className="text-6xl mb-4" />
+            <CountUp
+              end={achievement.value}
+              duration={2}
+              className="text-5xl sm:text-6xl font-bold"
+            />
+            <p className="mt-4 text-xl sm:text-2xl">{achievement.title}</p>
+          </motion.div>
+        ))}
+      </div>
+    </section>
+  );
+};
+
 
 export const Amenities = () => (
   <section id="amenities" className="min-h-screen bg-gray-100 p-4 sm:p-10">
-    <div className="text-center mb-10">
+    {/* Title Section with Scroll Animation */}
+    <motion.div
+      className="text-center mb-10"
+      initial={{ opacity: 0, y: -50 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8 }}
+      viewport={{ once: true }}
+    >
       <h2 className="text-3xl sm:text-4xl font-bold">Our Amenities</h2>
       <p className="text-lg sm:text-xl mt-2">Amenities that Define Excellence</p>
-    </div>
+    </motion.div>
+
+    {/* Amenities Grid with Scroll Animation */}
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-8 max-w-6xl mx-auto">
       {[
         { icon: faDice, title: "Indoor Games" },
@@ -183,10 +359,17 @@ export const Amenities = () => (
         { icon: faChild, title: "Kid's Play Area" },
         { icon: faCar, title: "Parking" },
       ].map((amenity, index) => (
-        <div key={index} className="p-4 sm:p-6 bg-gray-50 rounded-lg shadow-lg text-center">
+        <motion.div
+          key={index}
+          className="p-4 sm:p-6 bg-gray-50 rounded-lg shadow-lg text-center"
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: index * 0.1 }} // Slight delay for staggered animation
+          viewport={{ once: true }}
+        >
           <FontAwesomeIcon icon={amenity.icon} className="text-4xl sm:text-6xl text-gray-500 mb-4" />
           <h3 className="text-lg sm:text-xl font-semibold">{amenity.title}</h3>
-        </div>
+        </motion.div>
       ))}
     </div>
   </section>
@@ -194,26 +377,20 @@ export const Amenities = () => (
 
 export const Contact = () => (
   <section id="contact" className="min-h-screen bg-gray-100 p-4 sm:p-10 flex flex-col lg:flex-row justify-between">
-    <div className="w-full lg:w-1/2 p-4 lg:p-6 mb-6 lg:mb-0">
-      <h2 className="text-3xl sm:text-4xl font-bold mb-4">About Developer</h2>
-      <p className="text-base sm:text-lg mb-6">
-        We are a leading real estate development company focused on delivering world-class living spaces 
-        with modern designs and cutting-edge amenities. Our team is committed to providing luxurious homes
-        that cater to the evolving needs of our customers. With years of experience in the industry, 
-        we bring unmatched expertise in crafting properties that enhance both lifestyle and investment potential.
-      </p>
-      <p className="text-base sm:text-lg mb-6">
-        Our philosophy centers around innovation, sustainability, and excellence. We have delivered a wide array of 
-        residential, commercial, and mixed-use properties that meet the highest standards of quality. 
-        Our aim is to create spaces that inspire joy, enhance well-being, and deliver long-term value to our customers.
-      </p>
-    </div>
-    <div className="w-full lg:w-1/2 p-6 sm:p-8 bg-gradient-to-r from-gray-600 to-gray-400 text-white rounded-lg shadow-xl">
-      <h3 className="text-2xl sm:text-3xl font-bold mb-6 text-center border-b pb-2 border-white">Developer Contact Details</h3>
+    
+    {/* Contact Details Section with Scroll Animation */}
+    <motion.div
+      className="w-full lg:w-1/2 p-6 sm:p-8 bg-gradient-to-r from-gray-600 to-gray-400 text-white rounded-lg shadow-xl"
+      initial={{ opacity: 0, x: -100 }}
+      whileInView={{ opacity: 1, x: 0 }}
+      transition={{ duration: 0.8 }}
+      viewport={{ once: true }}
+    >
+      <h3 className="text-2xl sm:text-3xl font-bold mb-6 text-center border-b pb-2 border-white">Santosh Gupta Garlapati</h3>
       <div className="space-y-4 sm:space-y-6 text-base sm:text-lg">
         <div>
           <h4 className="text-lg sm:text-xl font-semibold">Phone:</h4>
-          <p>+919123456789</p>
+          <p>+919912344477</p>
         </div>
         <div>
           <h4 className="text-lg sm:text-xl font-semibold">Email:</h4>
@@ -232,10 +409,33 @@ export const Contact = () => (
         </div>
         <div className="mt-6 sm:mt-8 flex justify-center">
           <button className="bg-yellow-400 hover:bg-yellow-500 text-gray-900 py-2 sm:py-3 px-6 sm:px-8 rounded-full font-bold shadow-md text-sm sm:text-base">
-            <a href="tel:+919123456789">Call Now</a>
+            <a href="tel:+919912344477">Call Now</a>
           </button>
         </div>
       </div>
-    </div>
+    </motion.div>
+
+    {/* Google Map Section with Scroll Animation */}
+    <motion.div
+      className="w-full lg:w-1/2 p-4 lg:p-6 mb-6 lg:mb-0"
+      initial={{ opacity: 0, x: 100 }}
+      whileInView={{ opacity: 1, x: 0 }}
+      transition={{ duration: 0.8 }}
+      viewport={{ once: true }}
+    >
+      <h1 className="text-2xl font-bold mb-4">Get in Touch</h1>
+      <div className="w-full h-96">
+        <iframe
+          title="Gachibowli Location"
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3806.8498970533634!2d78.35420987462487!3d17.446043788090034!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bcb93bdaafdc5d1%3A0xe1517c7804210e33!2sGachibowli%2C%20Hyderabad%2C%20Telangana!5e0!3m2!1sen!2sin!4v1631003576350!5m2!1sen!2sin"
+          width="100%"
+          height="100%"
+          style={{ border: 0 }}
+          allowFullScreen=""
+          loading="lazy"
+        ></iframe>
+      </div>
+    </motion.div>
+
   </section>
 );

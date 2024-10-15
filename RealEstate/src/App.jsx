@@ -1,15 +1,15 @@
 import React from "react";
 import Header from "./Components/Header"
-import { Home, Overview, Highlights, Amenities, Contact } from './Components/Sections'
+import { Home, Overview, Achievements,  Contact, Projects } from './Components/Sections'
 
 function App() {
   return (
     <div className="App">
       <Header />
       <Home />
+      <Projects/>
       <Overview />
-      <Highlights />
-      <Amenities />
+      <Achievements />
       <Contact />
     </div>
   );
