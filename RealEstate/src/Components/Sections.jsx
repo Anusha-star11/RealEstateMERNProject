@@ -7,6 +7,7 @@ import { faDumbbell, faRunning, faSwimmer, faCar, faDice, faShieldAlt, faChild, 
 import { faBriefcase, faProjectDiagram, faUsers, faAward, faSmile, faGlobe } from '@fortawesome/free-solid-svg-icons';
 import CountUp from 'react-countup';
 import { motion } from "framer-motion";
+import { Link, useNavigate } from 'react-router-dom';
 
 export const Home = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -65,7 +66,7 @@ export const Home = () => {
             <p className="text-lg sm:text-xl md:text-2xl mb-4 sm:mb-6 md:mb-8 text-center">
               {slide.subtitle}
             </p>
-            <button className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded text-sm sm:text-base transition duration-300 ease-in-out transform hover:scale-105">
+            <button className="bg-[#edcd20] bg-[#edcd20] text-[#3e5976] font-bold py-2 px-4 rounded text-sm sm:text-base transition duration-300 ease-in-out transform hover:scale-105">
               Book a Visit
             </button>
           </div>
@@ -139,12 +140,12 @@ export const Overview = () => (
 
 export const Projects = () => {
   const [categoryFilter, setCategoryFilter] = useState('All');
-  
+
   const categories = [
     { label: 'ALL', value: 'All' },
     { label: 'APPARTMENTS', value: 'Apartments' },
     { label: 'VILLAS', value: 'Villas' },
-    { label: 'COMMUNITY', value: 'Community' }
+    { label: 'COMMUNITY', value: 'Community' },
   ];
 
   const projects = [
@@ -190,11 +191,16 @@ export const Projects = () => {
       image: 'https://storage.googleapis.com/a1aa/image/oLKo17S29b7zMtWw53BJhIdMfP3nbTNA3W0vxefp0KYCQ3NnA.jpg',
       category: 'Community',
     },
+    // More projects...
   ];
 
-  const filteredProjects = categoryFilter === 'All' 
-    ? projects 
+  const filteredProjects = categoryFilter === 'All'
+    ? projects
     : projects.filter(project => project.category === categoryFilter);
+
+  const handleProjectClick = (project) => {
+    navigate(`/project/${project.id}`, { state: { project } });
+  };
 
   return (
     <section id="projects" className="py-12 bg-gray-100">
@@ -203,14 +209,12 @@ export const Projects = () => {
 
         {/* Category Tabs */}
         <div className="flex justify-center mb-8">
-          {categories.map((category) => (
+          {categories.map(category => (
             <button
               key={category.value}
               onClick={() => setCategoryFilter(category.value)}
               className={`px-4 py-2 mx-2 text-sm font-medium rounded-full ${
-                categoryFilter === category.value
-                  ? 'bg-orange-500 text-white'
-                  : 'bg-gray-200 text-gray-700'
+                categoryFilter === category.value ? 'bg-orange-500 text-white' : 'bg-gray-200 text-gray-700'
               } transition-colors duration-300`}
             >
               {category.label}
@@ -220,16 +224,16 @@ export const Projects = () => {
 
         {/* Projects Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filteredProjects.map((project) => (
+          {filteredProjects.map(project => (
             <motion.div
               key={project.id}
-              className="bg-white rounded-lg shadow-md relative overflow-hidden group"
-              initial={{ opacity: 0, y: 50 }} // Starting state: slightly below and transparent
-              whileInView={{ opacity: 1, y: 0 }} // End state: fully visible and in position
-              transition={{ duration: 0.9, ease: 'easeOut' }} // Animation speed and easing
-              viewport={{ once: true }} // Ensures the animation only happens once
+              className="bg-white rounded-lg shadow-md relative overflow-hidden group cursor-pointer"
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.9, ease: 'easeOut' }}
+              viewport={{ once: true }}
+              onClick={() => handleProjectClick(project)}
             >
-              {/* Image with title and description overlay */}
               <div className="relative overflow-hidden">
                 <img
                   src={project.image}
@@ -238,23 +242,11 @@ export const Projects = () => {
                 />
                 <motion.div
                   className="absolute inset-0 flex flex-col justify-center items-center bg-black bg-opacity-50 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                  initial={{ opacity: 0 }}
-                  whileHover={{ opacity: 1 }}
                 >
                   <h3 className="text-lg font-bold mb-1">{project.title}</h3>
                   <p className="text-sm">{project.description}</p>
                 </motion.div>
               </div>
-
-              {/* Dancing WhatsApp Icon */}
-              <a
-                href={`https://api.whatsapp.com/send?phone=919491881119&text=I%20am%20interested%20in%20${project.title}%2C%20could%20you%20please%20contact%20me%3F`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="absolute bottom-4 right-4 animate-bounce text-green-500"
-              >
-                <FontAwesomeIcon icon={faWhatsapp} className="text-3xl" />
-              </a>
             </motion.div>
           ))}
         </div>
@@ -262,6 +254,7 @@ export const Projects = () => {
     </section>
   );
 };
+
 
 // export const Highlights = () => (
 //   <section id="highlights" className="min-h-screen bg-gray-100 p-4 sm:p-10 flex flex-col md:flex-row items-center justify-between">

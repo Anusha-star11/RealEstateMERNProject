@@ -2,13 +2,12 @@ import React, { useState, useEffect } from "react";
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [scrollY, setScrollY] = useState(0); // State to track scroll position
+  const [scrollY, setScrollY] = useState(0);
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
 
-  // Function to handle smooth scrolling with offset
   const scrollToSection = (sectionId) => {
     const section = document.getElementById(sectionId);
     const headerHeight = document.querySelector("header").offsetHeight;
@@ -18,111 +17,108 @@ const Header = () => {
     });
   };
 
-  // Add scroll event listener to change header background on scroll
   useEffect(() => {
     const handleScroll = () => {
-      setScrollY(window.scrollY); // Update scroll position
+      setScrollY(window.scrollY);
     };
 
     window.addEventListener("scroll", handleScroll);
 
     return () => {
-      window.removeEventListener("scroll", handleScroll); // Cleanup on unmount
+      window.removeEventListener("scroll", handleScroll);
     };
   }, []);
 
   return (
     <header
-      className={`${
-        scrollY > 50 ? "bg-gray-600" : "bg-transparent"
-      } text-white fixed top-0 left-0 right-0 z-50 transition-colors duration-300`}
+      className={`fixed top-0 left-0 right-0 z-50 transition-colors duration-300 ${
+        scrollY > 50 ? "bg-[#1d2d3c]" : "bg-transparent"
+      }`}
     >
-      <nav className="container mx-auto p-4 flex justify-between items-center">
-        {/* Make V9 Properties clickable to scroll to home */}
-        <button
-          onClick={() => scrollToSection("home")}
-          className="text-xl font-bold focus:outline-none"
-        >
-          V9 Properties
-        </button>
-        <div className="hidden md:flex space-x-6">
+      <nav className="w-full flex items-center justify-between">
+        {/* Left side - Full Yellow Background for Logo */}
+        <div className="bg-[#edcd20] h-full flex items-center justify-center">
           <button
             onClick={() => scrollToSection("home")}
-            className="hover:underline"
+            className="text-xl font-bold text-[#1d2d3c] focus:outline-none w-[250px] h-[80px] flex items-center justify-center"
           >
-            Home
-          </button>
-          <button
-            onClick={() => scrollToSection("projects")}
-            className="hover:underline"
-          >
-            Projects
-          </button>
-          <button
-            onClick={() => scrollToSection("overview")}
-            className="hover:underline"
-          >
-            About Us
-          </button>
-          <button
-            onClick={() => scrollToSection("achievements")}
-            className="hover:underline"
-          >
-            Achievements
-          </button>
-          <button
-            onClick={() => scrollToSection("contact")}
-            className="hover:underline"
-          >
-            Contact Us
+            V9 Properties
           </button>
         </div>
-        <div className="md:hidden">
-          <button onClick={toggleMenu} className="focus:outline-none">
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
+
+        {/* Right side - Navigation Menu */}
+        <div className="flex-grow flex justify-end items-center h-full">
+          <div className="hidden md:flex space-x-6 text-white px-4">
+            <button
+              onClick={() => scrollToSection("home")}
+              className="hover:text-[#edcd20]"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M4 6h16M4 12h16M4 18h16"
-              ></path>
-            </svg>
-          </button>
+              Home
+            </button>
+            <button
+              onClick={() => scrollToSection("projects")}
+              className="hover:text-[#edcd20]"
+            >
+              Projects
+            </button>
+            <button
+              onClick={() => scrollToSection("overview")}
+              className="hover:text-[#edcd20]"
+            >
+              About Us
+            </button>
+            <button
+              onClick={() => scrollToSection("achievements")}
+              className="hover:text-[#edcd20]"
+            >
+              Achievements
+            </button>
+            <button
+              onClick={() => scrollToSection("contact")}
+              className="hover:text-[#edcd20]"
+            >
+              Contact Us
+            </button>
+          </div>
+
+          {/* Hamburger Menu for Mobile View */}
+          <div className="md:hidden px-4">
+            <button onClick={toggleMenu} className="text-white focus:outline-none">
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M4 6h16M4 12h16M4 18h16"
+                ></path>
+              </svg>
+            </button>
+          </div>
         </div>
       </nav>
+
+      {/* Mobile Menu */}
       {isOpen && (
-        <div className="md:hidden bg-blue-600 text-white p-4">
-          <button onClick={() => scrollToSection("home")} className="block py-2">
+        <div className="md:hidden bg-[#1d2d3c] text-white p-4 absolute top-full left-0 right-0">
+          <button onClick={() => scrollToSection("home")} className="block py-2 w-full text-left">
             Home
           </button>
-          <button
-            onClick={() => scrollToSection("projects")}
-            className="block py-2"
-          >
+          <button onClick={() => scrollToSection("projects")} className="block py-2 w-full text-left">
             Projects
           </button>
-          <button
-            onClick={() => scrollToSection("overview")}
-            className="block py-2"
-          >
+          <button onClick={() => scrollToSection("overview")} className="block py-2 w-full text-left">
             About Us
           </button>
-          <button
-            onClick={() => scrollToSection("achievements")}
-            className="block py-2"
-          >
+          <button onClick={() => scrollToSection("achievements")} className="block py-2 w-full text-left">
             Achievements
           </button>
-          <button
-            onClick={() => scrollToSection("contact")}
-            className="block py-2"
-          >
+          <button onClick={() => scrollToSection("contact")} className="block py-2 w-full text-left">
             Contact Us
           </button>
         </div>
