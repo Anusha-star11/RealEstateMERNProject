@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
+import logo from '../assets/logo.png'
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -50,10 +51,11 @@ const Header = () => {
     >
       <nav className="w-full flex items-center justify-between">
         {/* Left side - Full Yellow Background for Logo */}
-        <div className="bg-[#edcd20] h-full flex items-center justify-center">
+        <div className="bg-[#edcd20] h-full flex items-center justify-center ">
+        <img src={logo} alt="Logo" className="h-[50px] w-auto ml-4" />
           <Link
             to="/"
-            className="text-xl font-bold text-[#1d2d3c] focus:outline-none w-[250px] h-[80px] flex items-center justify-center"
+            className="text-xl font-bold text-[#1d2d3c] focus:outline-none w-[150px] h-[80px] flex items-center justify-center"
           >
             V9 Properties
           </Link>

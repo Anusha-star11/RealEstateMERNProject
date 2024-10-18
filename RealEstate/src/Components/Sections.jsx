@@ -20,7 +20,7 @@ export const Home = () => {
     },
     {
       title: "Land Owner Sale",
-      subtitle: "Realty",
+      subtitle: "Villas",
       backgroundImage: "https://media.istockphoto.com/id/2155900028/photo/modern-new-construction-home-in-los-angeles.jpg?s=1024x1024&w=is&k=20&c=sG83gG3AQdN13hHyyL9ACJaPHiR9bNW393woWisfY9A=",
     },
     {
