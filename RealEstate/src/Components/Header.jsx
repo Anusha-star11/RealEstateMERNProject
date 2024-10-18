@@ -1,20 +1,33 @@
 import React, { useState, useEffect } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrollY, setScrollY] = useState(0);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
 
-  const scrollToSection = (sectionId) => {
-    const section = document.getElementById(sectionId);
-    const headerHeight = document.querySelector("header").offsetHeight;
-    window.scrollTo({
-      top: section.offsetTop - headerHeight,
-      behavior: "smooth",
-    });
+  const navigateToSection = (sectionId) => {
+    if (location.pathname !== "/") {
+      navigate("/");
+      // We need to wait for the navigation to complete before scrolling
+      setTimeout(() => {
+        const section = document.getElementById(sectionId);
+        if (section) {
+          section.scrollIntoView({ behavior: "smooth" });
+        }
+      }, 100);
+    } else {
+      const section = document.getElementById(sectionId);
+      if (section) {
+        section.scrollIntoView({ behavior: "smooth" });
+      }
+    }
+    setIsOpen(false);
   };
 
   useEffect(() => {
@@ -38,43 +51,43 @@ const Header = () => {
       <nav className="w-full flex items-center justify-between">
         {/* Left side - Full Yellow Background for Logo */}
         <div className="bg-[#edcd20] h-full flex items-center justify-center">
-          <button
-            onClick={() => scrollToSection("home")}
+          <Link
+            to="/"
             className="text-xl font-bold text-[#1d2d3c] focus:outline-none w-[250px] h-[80px] flex items-center justify-center"
           >
             V9 Properties
-          </button>
+          </Link>
         </div>
 
         {/* Right side - Navigation Menu */}
         <div className="flex-grow flex justify-end items-center h-full">
           <div className="hidden md:flex space-x-6 text-white px-4">
             <button
-              onClick={() => scrollToSection("home")}
+              onClick={() => navigateToSection("home")}
               className="hover:text-[#edcd20]"
             >
               Home
             </button>
             <button
-              onClick={() => scrollToSection("projects")}
+              onClick={() => navigateToSection("projects")}
               className="hover:text-[#edcd20]"
             >
               Projects
             </button>
             <button
-              onClick={() => scrollToSection("overview")}
+              onClick={() => navigateToSection("overview")}
               className="hover:text-[#edcd20]"
             >
               About Us
             </button>
             <button
-              onClick={() => scrollToSection("achievements")}
+              onClick={() => navigateToSection("achievements")}
               className="hover:text-[#edcd20]"
             >
               Achievements
             </button>
             <button
-              onClick={() => scrollToSection("contact")}
+              onClick={() => navigateToSection("contact")}
               className="hover:text-[#edcd20]"
             >
               Contact Us
@@ -106,19 +119,19 @@ const Header = () => {
       {/* Mobile Menu */}
       {isOpen && (
         <div className="md:hidden bg-[#1d2d3c] text-white p-4 absolute top-full left-0 right-0">
-          <button onClick={() => scrollToSection("home")} className="block py-2 w-full text-left">
+          <button onClick={() => navigateToSection("home")} className="block py-2 w-full text-left">
             Home
           </button>
-          <button onClick={() => scrollToSection("projects")} className="block py-2 w-full text-left">
+          <button onClick={() => navigateToSection("projects")} className="block py-2 w-full text-left">
             Projects
           </button>
-          <button onClick={() => scrollToSection("overview")} className="block py-2 w-full text-left">
+          <button onClick={() => navigateToSection("overview")} className="block py-2 w-full text-left">
             About Us
           </button>
-          <button onClick={() => scrollToSection("achievements")} className="block py-2 w-full text-left">
+          <button onClick={() => navigateToSection("achievements")} className="block py-2 w-full text-left">
             Achievements
           </button>
-          <button onClick={() => scrollToSection("contact")} className="block py-2 w-full text-left">
+          <button onClick={() => navigateToSection("contact")} className="block py-2 w-full text-left">
             Contact Us
           </button>
         </div>
