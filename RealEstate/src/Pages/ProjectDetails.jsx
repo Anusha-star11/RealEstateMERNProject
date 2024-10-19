@@ -196,9 +196,9 @@ export const ProjectDetails = () => {
       </section> */}
 
       {/* Footer */}
-      <footer className="bg-gray-800 text-white p-4 text-center">
+      {/* <footer className="bg-gray-800 text-white p-4 text-center">
         &copy; {new Date().getFullYear()} V9 Properties. All Rights Reserved.
-      </footer>
+      </footer> */}
     </div>
   );
 };
