@@ -15,7 +15,6 @@ const Header = () => {
   const navigateToSection = (sectionId) => {
     if (location.pathname !== "/") {
       navigate("/");
-      // We need to wait for the navigation to complete before scrolling
       setTimeout(() => {
         const section = document.getElementById(sectionId);
         if (section) {
@@ -46,51 +45,54 @@ const Header = () => {
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-colors duration-300 ${
-        scrollY > 50 ? "bg-[#1d2d3c]" : "bg-transparent"
+        scrollY > 50 ? "bg-[#365359]" : "bg-transparent"
       }`}
     >
-      <nav className="w-full flex items-center justify-between">
-        {/* Left side - Full Yellow Background for Logo */}
-        <div className="bg-[#edcd20] h-full flex items-center justify-center ">
-        <img src={logo} alt="Logo" className="h-[50px] w-auto ml-4" />
-          <Link
-            to="/"
-            className="text-xl font-bold text-[#1d2d3c] focus:outline-none w-[150px] h-[80px] flex items-center justify-center"
-          >
-            V9 Properties
-          </Link>
-        </div>
+      <nav className="w-full flex items-center justify-between h-14 md:h-16 lg:h-18">
+        {/* Left side - Logo */}
+        <Link
+          to="/"
+          className="focus:outline-none h-full flex-shrink-0 flex items-center justify-start pl-2 pr-4 overflow-hidden"
+          style={{ maxWidth: 'calc(100vw - 200px)' }}
+        >
+          <img 
+            src={logo} 
+            alt="V9 Properties Logo" 
+            className="h-auto w-auto max-h-full"
+            style={{ maxWidth: '100%', objectFit: 'contain' }}
+          />
+        </Link>
 
         {/* Right side - Navigation Menu */}
-        <div className="flex-grow flex justify-end items-center h-full">
-          <div className="hidden md:flex space-x-6 text-white px-4">
+        <div className="flex-shrink-0 flex justify-end items-center h-full">
+          <div className="hidden md:flex space-x-3 lg:space-x-6 text-[#f2d39a] px-4">
             <button
               onClick={() => navigateToSection("home")}
-              className="hover:text-[#edcd20]"
+              className="hover:text-white text-sm lg:text-base whitespace-nowrap transition-colors duration-300"
             >
               Home
             </button>
             <button
               onClick={() => navigateToSection("projects")}
-              className="hover:text-[#edcd20]"
+              className="hover:text-white text-sm lg:text-base whitespace-nowrap transition-colors duration-300"
             >
               Projects
             </button>
             <button
               onClick={() => navigateToSection("overview")}
-              className="hover:text-[#edcd20]"
+              className="hover:text-white text-sm lg:text-base whitespace-nowrap transition-colors duration-300"
             >
               About Us
             </button>
             <button
               onClick={() => navigateToSection("achievements")}
-              className="hover:text-[#edcd20]"
+              className="hover:text-white text-sm lg:text-base whitespace-nowrap transition-colors duration-300"
             >
               Achievements
             </button>
             <button
               onClick={() => navigateToSection("contact")}
-              className="hover:text-[#edcd20]"
+              className="hover:text-white text-sm lg:text-base whitespace-nowrap transition-colors duration-300"
             >
               Contact Us
             </button>
@@ -98,9 +100,9 @@ const Header = () => {
 
           {/* Hamburger Menu for Mobile View */}
           <div className="md:hidden px-4">
-            <button onClick={toggleMenu} className="text-white focus:outline-none">
+            <button onClick={toggleMenu} className="text-[#f2d39a] focus:outline-none">
               <svg
-                className="w-6 h-6"
+                className="w-5 h-5"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -120,20 +122,20 @@ const Header = () => {
 
       {/* Mobile Menu */}
       {isOpen && (
-        <div className="md:hidden bg-[#1d2d3c] text-white p-4 absolute top-full left-0 right-0">
-          <button onClick={() => navigateToSection("home")} className="block py-2 w-full text-left">
+        <div className="md:hidden bg-[#1d2d3c] text-[#f2d39a] p-4 absolute top-full left-0 right-0">
+          <button onClick={() => navigateToSection("home")} className="block py-2 w-full text-left hover:text-white transition-colors duration-300">
             Home
           </button>
-          <button onClick={() => navigateToSection("projects")} className="block py-2 w-full text-left">
+          <button onClick={() => navigateToSection("projects")} className="block py-2 w-full text-left hover:text-white transition-colors duration-300">
             Projects
           </button>
-          <button onClick={() => navigateToSection("overview")} className="block py-2 w-full text-left">
+          <button onClick={() => navigateToSection("overview")} className="block py-2 w-full text-left hover:text-white transition-colors duration-300">
             About Us
           </button>
-          <button onClick={() => navigateToSection("achievements")} className="block py-2 w-full text-left">
+          <button onClick={() => navigateToSection("achievements")} className="block py-2 w-full text-left hover:text-white transition-colors duration-300">
             Achievements
           </button>
-          <button onClick={() => navigateToSection("contact")} className="block py-2 w-full text-left">
+          <button onClick={() => navigateToSection("contact")} className="block py-2 w-full text-left hover:text-white transition-colors duration-300">
             Contact Us
           </button>
         </div>

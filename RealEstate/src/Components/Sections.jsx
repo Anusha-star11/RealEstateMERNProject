@@ -8,6 +8,7 @@ import { faBriefcase, faProjectDiagram, faUsers, faAward, faSmile, faGlobe } fro
 import CountUp from 'react-countup';
 import { motion } from "framer-motion";
 import { Link, useNavigate } from 'react-router-dom';
+import { Phone } from 'lucide-react'; // Import the Phone icon
 
 export const Home = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -46,45 +47,49 @@ export const Home = () => {
 
   return (
     <section id="home">
-    <div className="relative w-full h-[300px] sm:h-[400px] md:h-[500px] lg:h-[600px] overflow-hidden">
-      {slides.map((slide, index) => (
-        <div
-          key={index}
-          className={`absolute top-0 left-0 w-full h-full transition-opacity duration-500 ease-in-out ${
-            index === currentSlide ? 'opacity-100' : 'opacity-0'
-          }`}
-        >
-          <img
-            src={slide.backgroundImage}
-            alt={slide.title}
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-black bg-opacity-40 flex flex-col justify-center items-center text-white p-4">
-            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-2 sm:mb-4 text-center">
-              {slide.title}
-            </h1>
-            <p className="text-lg sm:text-xl md:text-2xl mb-4 sm:mb-6 md:mb-8 text-center">
-              {slide.subtitle}
-            </p>
-            <button className="bg-[#edcd20] bg-[#edcd20] text-[#3e5976] font-bold py-2 px-4 rounded text-sm sm:text-base transition duration-300 ease-in-out transform hover:scale-105">
-              Book a Visit
-            </button>
+      <div className="relative w-full h-[300px] sm:h-[400px] md:h-[500px] lg:h-[600px] overflow-hidden">
+        {slides.map((slide, index) => (
+          <div
+            key={index}
+            className={`absolute top-0 left-0 w-full h-full transition-opacity duration-500 ease-in-out ${
+              index === currentSlide ? 'opacity-100' : 'opacity-0'
+            }`}
+          >
+            <img
+              src={slide.backgroundImage}
+              alt={slide.title}
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-black bg-opacity-40 flex flex-col justify-center items-center text-white p-4">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-2 sm:mb-4 text-center">
+                {slide.title}
+              </h1>
+              <p className="text-lg sm:text-xl md:text-2xl mb-4 sm:mb-6 md:mb-8 text-center">
+                {slide.subtitle}
+              </p>
+              <a 
+                href="tel:+919912344477" 
+                className="bg-[#f2d39a] text-[#365359] font-bold py-2 px-4 rounded text-sm sm:text-base transition duration-300 ease-in-out transform hover:scale-105 hover:bg-[#e6c38c] flex items-center"
+              >
+                <Phone size={20} className="mr-2" />
+                Book a Visit
+              </a>
+            </div>
           </div>
-        </div>
-      ))}
-      <button
-        onClick={prevSlide}
-        className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full hidden sm:block"
-      >
-        &#10094;
-      </button>
-      <button
-        onClick={nextSlide}
-        className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full hidden sm:block"
-      >
-        &#10095;
-      </button>
-    </div>
+        ))}
+        <button
+          onClick={prevSlide}
+          className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full hidden sm:block hover:bg-opacity-75 transition-all"
+        >
+          &#10094;
+        </button>
+        <button
+          onClick={nextSlide}
+          className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full hidden sm:block hover:bg-opacity-75 transition-all"
+        >
+          &#10095;
+        </button>
+      </div>
     </section>
   );
 };
@@ -251,7 +256,7 @@ export const Projects = () => {
 
               {/* Dancing WhatsApp Icon */}
               <a
-                href={`https://api.whatsapp.com/send?phone=919491881119&text=I%20am%20interested%20in%20${project.title}%2C%20could%20you%20please%20contact%20me%3F`}
+                href={`https://api.whatsapp.com/send?phone=919912344477&text=I%20am%20interested%20in%20${project.title}%2C%20could%20you%20please%20contact%20me%3F`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="absolute bottom-4 right-4 animate-bounce text-green-500"
@@ -319,41 +324,43 @@ export const Projects = () => {
 
 
 export const Achievements = () => {
-  const achievements = [
-    { icon: faBriefcase, title: 'Years of Experience', value: 10, bgColor: 'from-purple-500 to-purple-700' },
-    { icon: faProjectDiagram, title: 'Projects Completed', value: 120, bgColor: 'from-green-500 to-green-700' },
-    { icon: faUsers, title: 'Clients Worked With', value: 50, bgColor: 'from-blue-500 to-blue-700' },
-    { icon: faAward, title: 'Awards Won', value: 8, bgColor: 'from-pink-500 to-pink-700' },
-    { icon: faSmile, title: 'Satisfied Customers', value: 500, bgColor: 'from-yellow-500 to-yellow-700' },
-    { icon: faGlobe, title: 'Countries Served', value: 15, bgColor: 'from-red-500 to-red-700' },
+  const achievementData = [
+    { icon: faBriefcase, title: 'Years of Experience', value: 10, bgColor: 'from-[#3a5260] to-[#2c3e50]' },
+    { icon: faProjectDiagram, title: 'Projects Completed', value: 120, bgColor: 'from-[#4a6572] to-[#344955]' },
+    { icon: faUsers, title: 'Clients Worked With', value: 50, bgColor: 'from-[#5a7682] to-[#40545e]' },
+    { icon: faSmile, title: 'Satisfied Customers', value: 500, bgColor: 'from-[#6a8792] to-[#4c616b]' },
   ];
 
   return (
-    <section id="achievements" className="min-h-screen bg-gray-100 p-4 sm:p-10 text-center">
-      <h2 className="text-3xl sm:text-4xl font-bold mb-8 text-gray-800">Our Achievements</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-        {achievements.map((achievement, index) => (
-          <motion.div
-            key={index}
-            className={`p-6 bg-gradient-to-r ${achievement.bgColor} text-white rounded-lg shadow-lg flex flex-col items-center justify-center`}
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-          >
-            <FontAwesomeIcon icon={achievement.icon} className="text-6xl mb-4" />
-            <CountUp
-              end={achievement.value}
-              duration={2}
-              className="text-5xl sm:text-6xl font-bold"
-            />
-            <p className="mt-4 text-xl sm:text-2xl">{achievement.title}</p>
-          </motion.div>
-        ))}
+    <section id="achievements" className="py-16 bg-gray-100 text-center">
+      <div className="container mx-auto px-4">
+        <h2 className="text-3xl sm:text-4xl font-bold mb-12 text-[#365359]">Our Achievements</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
+          {achievementData.map((achievement, index) => (
+            <motion.div
+              key={index}
+              className={`p-6 bg-gradient-to-br ${achievement.bgColor} rounded-lg shadow-lg flex flex-col items-center justify-center transition-transform duration-300 hover:scale-105`}
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: index * 0.1 }}
+              viewport={{ once: true }}
+            >
+              <FontAwesomeIcon icon={achievement.icon} className="text-5xl mb-4 text-[#f2d39a]" />
+              <CountUp
+                end={achievement.value}
+                duration={2.5}
+                className="text-4xl sm:text-5xl font-bold text-[#f2d39a]"
+              />
+              <p className="mt-3 text-lg sm:text-xl text-[#f2d39a] opacity-90">{achievement.title}</p>
+            </motion.div>
+          ))}
+        </div>
       </div>
     </section>
   );
 };
+
+
 
 
 export const Amenities = () => (
@@ -403,13 +410,13 @@ export const Contact = () => (
     
     {/* Contact Details Section with Scroll Animation */}
     <motion.div
-      className="w-full lg:w-1/2 p-6 sm:p-8 bg-gradient-to-r from-gray-600 to-gray-400 text-white rounded-lg shadow-xl flex flex-col justify-center"
+      className="w-full lg:w-1/2 p-6 sm:p-8 bg-[#365359] text-[#f2d39a] rounded-lg shadow-xl flex flex-col justify-center"
       initial={{ opacity: 0, x: -100 }}
       whileInView={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.8 }}
       viewport={{ once: true }}
     >
-      <h3 className="text-2xl sm:text-3xl font-bold mb-6 text-center border-b pb-2 border-white">Santosh Gupta Garlapati</h3>
+      <h3 className="text-2xl sm:text-3xl font-bold mb-6 text-center border-b pb-2 border-[#f2d39a]">Santosh Gupta Garlapati</h3>
       <div className="space-y-4 sm:space-y-6 text-base sm:text-lg">
         <div>
           <h4 className="text-lg sm:text-xl font-semibold">Phone:</h4>
@@ -431,10 +438,10 @@ export const Contact = () => (
           <p>Monday - Friday: 9:00 AM - 6:00 PM</p>
         </div>
         <div className="mt-6 sm:mt-8 flex justify-center">
-          <button className="bg-yellow-400 hover:bg-yellow-500 text-gray-900 py-2 sm:py-3 px-6 sm:px-8 rounded-full font-bold shadow-md text-sm sm:text-base">
-            <a href="tel:+919912344477">Call Now</a>
-          </button>
-        </div>
+  <button className="bg-[#f2d39a] hover:bg-[#e6c08a] text-[#365359] py-2 sm:py-3 px-6 sm:px-8 rounded-full font-bold shadow-md text-sm sm:text-base">
+    <a href="tel:+919912344477">Call Now</a>
+  </button>
+</div>
       </div>
     </motion.div>
 
