@@ -44,28 +44,27 @@ const Header = () => {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-colors duration-300 w-full ${
-        scrollY > 50 ? "bg-[#365359]" : "bg-transparent"
-      }`}
-    >
-      <nav className="container mx-auto px-4 flex items-center justify-between h-14 md:h-16 lg:h-18">
-        {/* Left side - Logo */}
-        <Link
-          to="/"
-          className="focus:outline-none h-full flex-shrink-0 flex items-center justify-start overflow-hidden"
-          style={{ maxWidth: 'calc(100% - 60px)' }}
-        >
-          <img 
-            src={logo} 
-            alt="V9 Properties Logo" 
-            className="h-auto w-auto max-h-full"
-            style={{ maxWidth: '100%', objectFit: 'contain' }}
-          />
-        </Link>
+    className={`fixed top-0 left-0 right-0 z-50 transition-colors duration-300 w-full bg-[#365359]
+    `}
+  >
+    <nav className="container mx-auto px-4 flex items-center justify-between h-14 md:h-16 lg:h-18">
+      {/* Left side - Logo */}
+      <Link
+        to="/"
+        className="focus:outline-none h-full flex-shrink-0 flex items-center justify-start overflow-hidden"
+        style={{ maxWidth: 'calc(100% - 60px)' }}
+      >
+        <img 
+          src={logo} 
+          alt="V9 Properties Logo" 
+          className="h-auto w-auto max-h-full"
+          style={{ maxWidth: '100%', objectFit: 'contain' }}
+        />
+      </Link>
 
-        {/* Right side - Navigation Menu */}
-        <div className="flex-shrink-0 flex justify-end items-center h-full">
-          <div className="hidden md:flex space-x-3 lg:space-x-6 text-[#f2d39a]">
+      {/* Right side - Navigation Menu */}
+      <div className="flex-shrink-0 flex justify-end items-center h-full">
+        <div className="hidden md:flex space-x-3 lg:space-x-6 text-[#f2d39a]">
             <button
               onClick={() => navigateToSection("home")}
               className="hover:text-white text-sm lg:text-base whitespace-nowrap transition-colors duration-300"
@@ -99,7 +98,7 @@ const Header = () => {
           </div>
 
           {/* Hamburger Menu for Mobile View */}
-          <div className="md:hidden">
+          <div className="md:hidden flex items-center">
             <button onClick={toggleMenu} className="text-[#f2d39a] focus:outline-none p-2">
               <svg
                 className="w-6 h-6"
