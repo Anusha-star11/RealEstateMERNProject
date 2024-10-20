@@ -339,7 +339,7 @@ export const Achievements = () => {
           {achievementData.map((achievement, index) => (
             <motion.div
               key={index}
-              className={`p-6 bg-gradient-to-br ${achievement.bgColor} rounded-lg shadow-lg flex flex-col items-center justify-center transition-transform duration-300 hover:scale-105`}
+              className={`p-6 bg-[#365359] rounded-lg shadow-lg flex flex-col items-center justify-center transition-transform duration-300 hover:scale-105`}
               initial={{ opacity: 0, y: 50 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: index * 0.1 }}
@@ -406,17 +406,17 @@ export const Amenities = () => (
 );
 
 export const Contact = () => (
-  <section id="contact" className="min-h-screen bg-gray-100 p-4 sm:p-10 flex flex-col lg:flex-row justify-between items-stretch">
+  <section id="contact" className="min-h-screen bg-white p-4 sm:p-10 flex flex-col lg:flex-row justify-between items-stretch">
     
     {/* Contact Details Section with Scroll Animation */}
     <motion.div
-      className="w-full lg:w-1/2 p-6 sm:p-8 bg-[#365359] text-[#f2d39a] rounded-lg shadow-xl flex flex-col justify-center"
+      className="w-full lg:w-1/2 p-6 sm:p-8 bg-gray-200 text-[#365359] rounded-lg shadow-xl flex flex-col justify-center"
       initial={{ opacity: 0, x: -100 }}
       whileInView={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.8 }}
       viewport={{ once: true }}
     >
-      <h3 className="text-2xl sm:text-3xl font-bold mb-6 text-center border-b pb-2 border-[#f2d39a]">Santosh Gupta Garlapati</h3>
+      <h3 className="text-2xl sm:text-3xl font-bold mb-6 text-center border-b pb-2 border-[#365359]">Santosh Gupta Garlapati</h3>
       <div className="space-y-4 sm:space-y-6 text-base sm:text-lg">
         <div>
           <h4 className="text-lg sm:text-xl font-semibold">Phone:</h4>
