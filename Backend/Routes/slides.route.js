@@ -79,4 +79,50 @@ router.post("/slides", upload.single("backgroundImage"), async (req, res) => {
   }
 });
 
+
+// Update a slide
+router.put("/slides/:id", upload.single("backgroundImage"), async (req, res) => {
+  try {
+    const { title, subtitle, backgroundImageURL } = req.body;
+    
+    let backgroundImage;
+    if (req.file) {
+      backgroundImage = `/uploads/${req.file.filename}`;
+    } else if (backgroundImageURL) {
+      backgroundImage = backgroundImageURL;
+    }
+
+    const updatedSlide = await Slide.findByIdAndUpdate(
+      req.params.id,
+      { title, subtitle, backgroundImage },
+      { new: true }
+    );
+
+    if (!updatedSlide) {
+      return res.status(404).json({ error: "Slide not found" });
+    }
+
+    res.status(200).json({ message: "Slide updated successfully", slide: updatedSlide });
+  } catch (error) {
+    console.error("Error updating slide:", error);
+    res.status(500).json({ error: "Failed to update slide" });
+  }
+});
+
+// Delete a slide
+router.delete("/slides/:id", async (req, res) => {
+  try {
+    const deletedSlide = await Slide.findByIdAndDelete(req.params.id);
+    if (!deletedSlide) {
+      return res.status(404).json({ error: "Slide not found" });
+    }
+
+    res.status(200).json({ message: "Slide deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting slide:", error);
+    res.status(500).json({ error: "Failed to delete slide" });
+  }
+});
+
+
 export default router;

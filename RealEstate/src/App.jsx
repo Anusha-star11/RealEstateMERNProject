@@ -4,7 +4,9 @@ import Header from "./Components/Header";
 import { Home, Overview, Achievements, Contact, Projects } from './Components/Sections';
 import Footer from "./Components/Footer";
 import ProjectDetails from "./Pages/ProjectDetails"; // Import the ProjectDetails component
-import AdminPage  from "./Pages/AdminPage.jsx"; // Import SlideForm component
+import AdminPage  from "./Pages/AdminPage.jsx"; 
+import EditSlide from "./Pages/EditSlide.jsx";// Import SlideForm component
+import SlideForm from "./Pages/SlideForm.jsx";
 
 function App() {
   return (
@@ -30,8 +32,17 @@ function App() {
           {/* Project Details page */}
           <Route path="/project/:id" element={<ProjectDetails />} />
 
-          {/* Admin SlideForm page */}
+          {/* Admin Slide management page */}
           <Route path="/admin" element={<AdminPage />} />
+          
+          {/* Route to Add a new Slide */}
+          <Route path="/add-slide" element={<SlideForm />} />
+
+          {/* Route to Edit an existing Slide */}
+          <Route path="/edit-slide/:id" element={<SlideForm />} />
+
+          {/* Route to view and manage all slides (EditSlide page) */}
+          <Route path="/edit" element={<EditSlide />} />
         </Routes>
         {/* Footer is shown on all pages */}
         <Footer />
