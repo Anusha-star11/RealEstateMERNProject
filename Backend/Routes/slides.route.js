@@ -1,5 +1,6 @@
 import express from 'express';
 import multer from 'multer';
+import path from 'path';
 import Slide from '../models/slides.model.js';
 
 const router = express.Router();
@@ -7,14 +8,32 @@ const router = express.Router();
 // Configure multer for file uploads
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'uploads/'); // Ensure the `uploads` directory exists
+    cb(null, 'uploads/'); // Make sure this directory exists
   },
   filename: (req, file, cb) => {
-    cb(null, Date.now() + '-' + file.originalname);
-  },
+    // Create unique filename with original extension
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, uniqueSuffix + path.extname(file.originalname));
+  }
 });
 
-const upload = multer({ storage });
+// File filter to only allow image files
+const fileFilter = (req, file, cb) => {
+  const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+  if (allowedTypes.includes(file.mimetype)) {
+    cb(null, true);
+  } else {
+    cb(new Error('Invalid file type. Only JPEG, PNG, GIF and WEBP files are allowed.'), false);
+  }
+};
+
+const upload = multer({ 
+  storage: storage,
+  fileFilter: fileFilter,
+  limits: {
+    fileSize: 15 * 1024 * 1024 // 5MB limit
+  }
+});
 
 // GET route to retrieve all slides
 router.get("/slides", async (req, res) => {
@@ -22,6 +41,7 @@ router.get("/slides", async (req, res) => {
     const slides = await Slide.find();
     res.status(200).json(slides);
   } catch (error) {
+    console.error("Error fetching slides:", error);
     res.status(500).json({ error: "Failed to retrieve slides" });
   }
 });
@@ -29,8 +49,18 @@ router.get("/slides", async (req, res) => {
 // POST route to add a new slide
 router.post("/slides", upload.single("backgroundImage"), async (req, res) => {
   try {
-    const { title, subtitle } = req.body;
-    const backgroundImage = req.file ? req.file.path : null; // File path
+    const { title, subtitle, backgroundImageURL } = req.body;
+    
+    let backgroundImage;
+    if (req.file) {
+      // If file was uploaded, create the full URL
+      backgroundImage = `/uploads/${req.file.filename}`;
+    } else if (backgroundImageURL) {
+      // If URL was provided, use that
+      backgroundImage = backgroundImageURL;
+    } else {
+      return res.status(400).json({ error: "Either backgroundImage file or backgroundImageURL is required" });
+    }
 
     const newSlide = new Slide({
       title,
@@ -39,7 +69,10 @@ router.post("/slides", upload.single("backgroundImage"), async (req, res) => {
     });
 
     await newSlide.save();
-    res.status(201).json({ message: "Slide added successfully" });
+    res.status(201).json({ 
+      message: "Slide added successfully", 
+      slide: newSlide 
+    });
   } catch (error) {
     console.error("Error adding slide:", error);
     res.status(500).json({ error: "Failed to add slide" });

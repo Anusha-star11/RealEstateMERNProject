@@ -1,95 +1,232 @@
 import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 export const SlideForm = () => {
   const [title, setTitle] = useState("");
   const [subtitle, setSubtitle] = useState("");
+  const [backgroundImageType, setBackgroundImageType] = useState("url");
   const [backgroundImage, setBackgroundImage] = useState(null);
-  const [message, setMessage] = useState("");
+  const [backgroundImageURL, setBackgroundImageURL] = useState("");
+  const [error, setError] = useState("");
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Create a FormData object to handle file uploads
-    const formData = new FormData();
-    formData.append("title", title);
-    formData.append("subtitle", subtitle);
-    formData.append("backgroundImage", backgroundImage); // The image file
+    setError("");
+    setShowSuccessMessage(false);
+    setIsSubmitting(true);
 
     try {
+      const formData = new FormData();
+      formData.append("title", title);
+      formData.append("subtitle", subtitle);
+
+      if (backgroundImageType === "upload" && backgroundImage) {
+        formData.append("backgroundImage", backgroundImage);
+      } else if (backgroundImageType === "url" && backgroundImageURL) {
+        formData.append("backgroundImageURL", backgroundImageURL);
+      } else {
+        setError("Please provide either an image file or URL");
+        setIsSubmitting(false);
+        return;
+      }
+
       const response = await fetch("http://localhost:5001/api/slides", {
         method: "POST",
-        body: formData, // Send formData with the file
+        body: formData,
       });
 
+      const data = await response.json();
+
       if (response.ok) {
-        setMessage("Slide added successfully!");
+        setShowSuccessMessage(true);
+        // Clear form
         setTitle("");
         setSubtitle("");
         setBackgroundImage(null);
+        setBackgroundImageURL("");
+        // Reset file input
+        const fileInput = document.querySelector('input[type="file"]');
+        if (fileInput) fileInput.value = "";
+
+        // Hide success message after 3 seconds
+        setTimeout(() => {
+          setShowSuccessMessage(false);
+        }, 3000);
       } else {
-        setMessage("Failed to add slide. Please try again.");
+        setError(data.error || "Failed to add slide");
       }
     } catch (error) {
       console.error("Error:", error);
-      setMessage("An error occurred. Please try again later.");
+      setError("An error occurred while adding the slide");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) { // 5MB limit
+        setError("File size too large. Maximum size is 5MB.");
+        e.target.value = "";
+        return;
+      }
+      
+      const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+      if (!allowedTypes.includes(file.type)) {
+        setError("Invalid file type. Only JPEG, PNG, GIF and WEBP files are allowed.");
+        e.target.value = "";
+        return;
+      }
+      
+      setBackgroundImage(file);
+      setError("");
     }
   };
 
   return (
-    <div className="max-w-lg mx-auto p-6 bg-white shadow-md rounded-lg mt-10">
-      <h2 className="text-2xl font-bold mb-6 text-center">Add New Slide</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block text-gray-700 font-bold mb-2" htmlFor="title">
-            Title
-          </label>
-          <input
-            type="text"
-            id="title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            required
-            className="w-full p-2 border border-gray-300 rounded"
-          />
-        </div>
+    <section className="relative">
+      {/* Success Message Toast */}
+      <AnimatePresence>
+        {showSuccessMessage && (
+          <motion.div
+            initial={{ opacity: 0, y: -50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -50 }}
+            className="fixed top-4 right-4 z-50"
+          >
+            <div className="bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg flex items-center">
+              <svg
+                className="w-6 h-6 mr-2"
+                fill="none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path d="M5 13l4 4L19 7"></path>
+              </svg>
+              <span className="font-medium">Slide added successfully!</span>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-        <div>
-          <label className="block text-gray-700 font-bold mb-2" htmlFor="subtitle">
-            Subtitle
-          </label>
-          <input
-            type="text"
-            id="subtitle"
-            value={subtitle}
-            onChange={(e) => setSubtitle(e.target.value)}
-            required
-            className="w-full p-2 border border-gray-300 rounded"
-          />
-        </div>
+      <div className="max-w-lg mx-auto p-6 bg-white shadow-md rounded-lg mt-10">
+        <h2 className="text-2xl font-bold mb-6 text-center">Add New Slide</h2>
+        
+        {error && (
+          <div className="mb-4 p-3 bg-red-100 text-red-700 rounded">
+            {error}
+          </div>
+        )}
 
-        <div>
-          <label className="block text-gray-700 font-bold mb-2" htmlFor="backgroundImage">
-            Background Image
-          </label>
-          <input
-            type="file"
-            id="backgroundImage"
-            onChange={(e) => setBackgroundImage(e.target.files[0])}
-            required
-            className="w-full p-2 border border-gray-300 rounded"
-          />
-        </div>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-gray-700 font-bold mb-2" htmlFor="title">
+              Title
+            </label>
+            <input
+              type="text"
+              id="title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              required
+              className="w-full p-2 border border-gray-300 rounded"
+            />
+          </div>
 
-        <button
-          type="submit"
-          className="w-full bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-600 transition duration-300"
-        >
-          Add Slide
-        </button>
-      </form>
+          <div>
+            <label className="block text-gray-700 font-bold mb-2" htmlFor="subtitle">
+              Subtitle
+            </label>
+            <input
+              type="text"
+              id="subtitle"
+              value={subtitle}
+              onChange={(e) => setSubtitle(e.target.value)}
+              required
+              className="w-full p-2 border border-gray-300 rounded"
+            />
+          </div>
 
-      {message && <p className="mt-4 text-center text-gray-700">{message}</p>}
-    </div>
+          <div className="mb-4">
+            <label className="block text-gray-700 font-bold mb-2">Background Image Source</label>
+            <div className="flex items-center space-x-4">
+              <label className="flex items-center">
+                <input
+                  type="radio"
+                  value="url"
+                  checked={backgroundImageType === "url"}
+                  onChange={(e) => setBackgroundImageType(e.target.value)}
+                  className="mr-2"
+                />
+                Image URL
+              </label>
+              <label className="flex items-center">
+                <input
+                  type="radio"
+                  value="upload"
+                  checked={backgroundImageType === "upload"}
+                  onChange={(e) => setBackgroundImageType(e.target.value)}
+                  className="mr-2"
+                />
+                Upload Image
+              </label>
+            </div>
+          </div>
+
+          {backgroundImageType === "url" ? (
+            <div>
+              <label className="block text-gray-700 font-bold mb-2" htmlFor="backgroundImageURL">
+                Background Image URL
+              </label>
+              <input
+                type="url"
+                id="backgroundImageURL"
+                value={backgroundImageURL}
+                onChange={(e) => setBackgroundImageURL(e.target.value)}
+                required={backgroundImageType === "url"}
+                className="w-full p-2 border border-gray-300 rounded"
+                placeholder="https://example.com/image.jpg"
+              />
+            </div>
+          ) : (
+            <div>
+              <label className="block text-gray-700 font-bold mb-2" htmlFor="backgroundImage">
+                Upload Background Image
+              </label>
+              <input
+                type="file"
+                id="backgroundImage"
+                onChange={handleFileChange}
+                required={backgroundImageType === "upload"}
+                accept="image/jpeg,image/png,image/gif,image/webp"
+                className="w-full p-2 border border-gray-300 rounded"
+              />
+              <p className="text-sm text-gray-500 mt-1">
+                Max file size: 5MB. Allowed formats: JPEG, PNG, GIF, WEBP
+              </p>
+            </div>
+          )}
+
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className={`w-full font-bold py-2 px-4 rounded transition duration-300 ${
+              isSubmitting
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-blue-500 hover:bg-blue-600 text-white"
+            }`}
+          >
+            {isSubmitting ? "Adding Slide..." : "Add Slide"}
+          </button>
+        </form>
+      </div>
+    </section>
   );
 };
 

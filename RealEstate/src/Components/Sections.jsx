@@ -70,7 +70,7 @@ import { Phone } from 'lucide-react'; // Import the Phone icon
             }`}
           >
             <img
-              src={slide.backgroundImage}
+              src={`http://localhost:5001${slide.backgroundImage}`}
               alt={slide.title}
               className="w-full h-full object-cover"
             />
@@ -106,6 +106,7 @@ import { Phone } from 'lucide-react'; // Import the Phone icon
       </section>
     );
   };
+  
 
 export const Overview = () => (
   <section id="overview" className="min-h-screen bg-white p-4 sm:p-10 flex flex-col md:flex-row items-center justify-center">
@@ -150,121 +151,152 @@ export const Overview = () => (
   </section>
 );
 
-export const Projects = () => {
-  const [categoryFilter, setCategoryFilter] = useState('All');
-  const categories = [
-    { label: 'ALL', value: 'All' },
-    { label: 'APPARTMENTS', value: 'Apartments' },
-    { label: 'VILLAS', value: 'Villas' },
-    { label: 'COMMUNITY', value: 'Community' }
-  ];
-  const projects = [
-    {
-      id: 1,
-      title: 'Project 1',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      image: 'https://storage.googleapis.com/a1aa/image/arpm9V3KVyZZNhGujkQ6M5wfSHJ5Enpv9MNRQclcuceVm7mTA.jpg',
-      category: 'Apartments',
-    },
-    {
-      id: 2,
-      title: 'Project 2',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      image: 'https://storage.googleapis.com/a1aa/image/npBMWYBfpQXXGSV93VVOlqPKHhefVhfeQW86jn9Hr8FAYc3cC.jpg',
-      category: 'Villas',
-    },
-    {
-      id: 3,
-      title: 'Project 3',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      image: 'https://storage.googleapis.com/a1aa/image/mSRcUla98B44DN3jJ7Ej0e6uYkLv1IjrwFFQJhFIfN4co7mTA.jpg',
-      category: 'Community',
-    },
-    {
-      id: 4,
-      title: 'Project 4',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      image: 'https://storage.googleapis.com/a1aa/image/kpffWOTdkXpLpUgCBkhaHmfjxuTbqZ0JKK1e8v5FeKHb7c3cC.jpg',
-      category: 'Apartments',
-    },
-    {
-      id: 5,
-      title: 'Project 5',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      image: 'https://storage.googleapis.com/a1aa/image/Uxh9jzjl8uYxHxAMO91trj84nERoIe88dnGMBKI8ZIl7wdzJA.jpg',
-      category: 'Villas',
-    },
-    {
-      id: 6,
-      title: 'Project 6',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      image: 'https://storage.googleapis.com/a1aa/image/oLKo17S29b7zMtWw53BJhIdMfP3nbTNA3W0vxefp0KYCQ3NnA.jpg',
-      category: 'Community',
-    },
-  ];
 
-  const filteredProjects = categoryFilter === 'All' 
-    ? projects 
-    : projects.filter(project => project.category === categoryFilter);
-
-  return (
-    <section id="projects" className="min-h-screen py-12 bg-gray-100 flex flex-col justify-center">
-      <div className="container mx-auto p-4">
-        <h2 className="text-3xl font-bold text-center mb-8">Our Catalogue</h2>
-        <div className="flex flex-wrap justify-center mb-8">
-          {categories.map((category) => (
-            <button
-              key={category.value}
-              onClick={() => setCategoryFilter(category.value)}
-              className={`px-4 py-2 m-1 text-sm font-medium rounded-full ${
-                categoryFilter === category.value
-                  ? 'bg-orange-500 text-white'
-                  : 'bg-gray-200 text-gray-700'
-              } transition-colors duration-300`}
-            >
-              {category.label}
-            </button>
-          ))}
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filteredProjects.map((project) => (
-            <motion.div
-              key={project.id}
-              className="bg-white rounded-lg shadow-md relative overflow-hidden group"
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.9, ease: 'easeOut' }}
-              viewport={{ once: true }}
-            >
-              <Link to={`/project/${project.id}`}>
-                <div className="relative overflow-hidden">
-                  <img
-                    src={project.image}
-                    alt={project.title}
-                    className="w-full h-40 object-cover rounded-t-lg transition-transform duration-500 group-hover:scale-110"
-                  />
-                  <div className="absolute inset-0 bg-black bg-opacity-50 flex flex-col justify-center items-center text-white p-4
-                                  opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">
-                    <h3 className="text-lg font-bold mb-1">{project.title}</h3>
-                    <p className="text-sm text-center">{project.description}</p>
-                  </div>
-                </div>
-              </Link>
-              <a
-                href={`https://api.whatsapp.com/send?phone=919912344477&text=I%20am%20interested%20in%20${project.title}%2C%20could%20you%20please%20contact%20me%3F`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="absolute bottom-4 right-4 animate-bounce text-green-500"
+  // const projects = [
+  //   {
+  //     id: 1,
+  //     title: 'Project 1',
+  //     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+  //     image: 'https://storage.googleapis.com/a1aa/image/arpm9V3KVyZZNhGujkQ6M5wfSHJ5Enpv9MNRQclcuceVm7mTA.jpg',
+  //     category: 'Apartments',
+  //   },
+  //   {
+  //     id: 2,
+  //     title: 'Project 2',
+  //     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+  //     image: 'https://storage.googleapis.com/a1aa/image/npBMWYBfpQXXGSV93VVOlqPKHhefVhfeQW86jn9Hr8FAYc3cC.jpg',
+  //     category: 'Villas',
+  //   },
+  //   {
+  //     id: 3,
+  //     title: 'Project 3',
+  //     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+  //     image: 'https://storage.googleapis.com/a1aa/image/mSRcUla98B44DN3jJ7Ej0e6uYkLv1IjrwFFQJhFIfN4co7mTA.jpg',
+  //     category: 'Community',
+  //   },
+  //   {
+  //     id: 4,
+  //     title: 'Project 4',
+  //     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+  //     image: 'https://storage.googleapis.com/a1aa/image/kpffWOTdkXpLpUgCBkhaHmfjxuTbqZ0JKK1e8v5FeKHb7c3cC.jpg',
+  //     category: 'Apartments',
+  //   },
+  //   {
+  //     id: 5,
+  //     title: 'Project 5',
+  //     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+  //     image: 'https://storage.googleapis.com/a1aa/image/Uxh9jzjl8uYxHxAMO91trj84nERoIe88dnGMBKI8ZIl7wdzJA.jpg',
+  //     category: 'Villas',
+  //   },
+  //   {
+  //     id: 6,
+  //     title: 'Project 6',
+  //     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+  //     image: 'https://storage.googleapis.com/a1aa/image/oLKo17S29b7zMtWw53BJhIdMfP3nbTNA3W0vxefp0KYCQ3NnA.jpg',
+  //     category: 'Community',
+  //   },
+  // ];
+  export const Projects = () => {
+    const [categoryFilter, setCategoryFilter] = useState("All");
+    const [projects, setProjects] = useState([]); // Initialize with an empty array
+    const [loading, setLoading] = useState(true); // State for loading indication
+  
+    const categories = [
+      { label: "ALL", value: "All" },
+      { label: "APARTMENTS", value: "Apartments" },
+      { label: "VILLAS", value: "Villas" },
+      { label: "COMMUNITY", value: "Community" },
+    ];
+  
+    // Fetch projects from the API on component mount
+    useEffect(() => {
+      const fetchProjects = async () => {
+        try {
+          const response = await fetch("http://localhost:5001/api/projects");
+          if (response.ok) {
+            const data = await response.json();
+            setProjects(data); // Set the fetched projects
+          } else {
+            console.error("Failed to fetch projects:", response.statusText);
+          }
+        } catch (error) {
+          console.error("Error fetching projects:", error);
+        } finally {
+          setLoading(false); // Stop loading after fetching
+        }
+      };
+  
+      fetchProjects();
+    }, []);
+  
+    const filteredProjects =
+      categoryFilter === "All"
+        ? projects
+        : projects.filter((project) => project.category === categoryFilter);
+  
+    return (
+      <section id="projects" className="min-h-screen py-12 bg-gray-100 flex flex-col justify-center">
+        <div className="container mx-auto p-4">
+          <h2 className="text-3xl font-bold text-center mb-8">Our Catalogue</h2>
+          
+          <div className="flex flex-wrap justify-center mb-8">
+            {categories.map((category) => (
+              <button
+                key={category.value}
+                onClick={() => setCategoryFilter(category.value)}
+                className={`px-4 py-2 m-1 text-sm font-medium rounded-full ${
+                  categoryFilter === category.value
+                    ? "bg-orange-500 text-white"
+                    : "bg-gray-200 text-gray-700"
+                } transition-colors duration-300`}
               >
-                <FontAwesomeIcon icon={faWhatsapp} className="text-3xl" />
-              </a>
-            </motion.div>
-          ))}
+                {category.label}
+              </button>
+            ))}
+          </div>
+  
+          {loading ? (
+            <p className="text-center text-lg">Loading projects...</p>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {filteredProjects.map((project) => (
+                <motion.div
+                  key={project.id}
+                  className="bg-white rounded-lg shadow-md relative overflow-hidden group"
+                  initial={{ opacity: 0, y: 50 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.9, ease: "easeOut" }}
+                  viewport={{ once: true }}
+                >
+                  <Link to={`/project/${project.id}`}>
+                    <div className="relative overflow-hidden">
+                      <img
+                        src={project.image}
+                        alt={project.title}
+                        className="w-full h-40 object-cover rounded-t-lg transition-transform duration-500 group-hover:scale-110"
+                      />
+                      <div className="absolute inset-0 bg-black bg-opacity-50 flex flex-col justify-center items-center text-white p-4 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">
+                        <h3 className="text-lg font-bold mb-1">{project.title}</h3>
+                        <p className="text-sm text-center">{project.description}</p>
+                      </div>
+                    </div>
+                  </Link>
+                  <a
+                    href={`https://api.whatsapp.com/send?phone=919912344477&text=I%20am%20interested%20in%20${project.title}%2C%20could%20you%20please%20contact%20me%3F`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="absolute bottom-4 right-4 animate-bounce text-green-500"
+                  >
+                    <FontAwesomeIcon icon={faWhatsapp} className="text-3xl" />
+                  </a>
+                </motion.div>
+              ))}
+            </div>
+          )}
         </div>
-      </div>
-    </section>
-  );
-};
+      </section>
+    );
+  };
 
 
 

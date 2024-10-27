@@ -1,12 +1,13 @@
 // models/Project.js
 import mongoose from "mongoose";
+import { v4 as uuidv4 } from 'uuid';
 
 const projectSchema = new mongoose.Schema({
-  id: {
-    type: Number,
-    required: true,
-    unique: true,
-  },
+    id: {
+        type: String,
+        required: true,
+        default: uuidv4, // Automatically generate a unique ID
+      },
   title: {
     type: String,
     required: true,
@@ -25,4 +26,7 @@ const projectSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model("Project", projectSchema);
+
+const Project = mongoose.model("Project", projectSchema);
+
+export default Project;
