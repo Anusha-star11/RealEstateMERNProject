@@ -1,225 +1,209 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import baseURL from "../url"; // Adjust based on your base URL setup
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
-export const EditSlide = () => {
+const EditSlidesForm = () => {
   const [slides, setSlides] = useState([]);
-  const [editingSlide, setEditingSlide] = useState(null);
-  const [formData, setFormData] = useState({
-    title: "",
-    subtitle: "",
-    backgroundImages: [], // Store both existing URLs and new File objects
-  });
-  const [imageOption, setImageOption] = useState("url"); // Track image input type
-  const [loading, setLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState(null);
-  const navigate = useNavigate();
+  const [formData, setFormData] = useState({});
+  const [selectedOption, setSelectedOption] = useState({}); // Track radio button selection per slide
+  const [selectedFile, setSelectedFile] = useState({}); // Track file upload per slide
 
+  // Fetch slides data
   useEffect(() => {
-    const fetchSlides = async () => {
-      try {
-        const response = await fetch(`${baseURL}/api/slides`);
-        if (response.ok) {
-          const data = await response.json();
-          setSlides(data);
-        } else {
-          console.error("Failed to fetch slides");
-        }
-      } catch (error) {
-        console.error("Error fetching slides:", error);
-      }
-    };
     fetchSlides();
   }, []);
 
-  const handleEdit = (id) => {
-    const selectedSlide = slides.find((slide) => slide._id === id);
-    setEditingSlide(selectedSlide);
-    setFormData({
-      title: selectedSlide.title || "",
-      subtitle: selectedSlide.subtitle || "",
-      backgroundImages: selectedSlide.backgroundImages || [], // Assuming array of URLs
-    });
+  const fetchSlides = async () => {
+    try {
+      const response = await axios.get('http://localhost:5001/api/slides');
+      setSlides(response.data);
+
+      // Initialize form data for each slide with default values
+      const initialFormData = {};
+      const initialOptionData = {};
+      response.data.forEach((slide) => {
+        initialFormData[slide._id] = {
+          title: slide.title || '',
+          subtitle: slide.subtitle || '',
+          backgroundImageURL: slide.backgroundImage || '',
+        };
+        initialOptionData[slide._id] = 'url'; // Default option
+      });
+      setFormData(initialFormData);
+      setSelectedOption(initialOptionData);
+    } catch (error) {
+      console.error('Error fetching slides:', error);
+    }
   };
 
-  const handleImageChange = (e) => {
-    const selectedFiles = Array.from(e.target.files);
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      backgroundImages: [...prevFormData.backgroundImages, ...selectedFiles],
+  // Handle form changes for each slide
+  const handleInputChange = (e, id) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [id]: {
+        ...prev[id],
+        [name]: value,
+      },
     }));
   };
 
-  const handleDeleteImage = (index) => {
-    setFormData((prevFormData) => {
-      const updatedImages = prevFormData.backgroundImages.filter((_, i) => i !== index);
-      return { ...prevFormData, backgroundImages: updatedImages };
-    });
+  // Handle radio button selection
+  const handleOptionChange = (id, option) => {
+    setSelectedOption((prev) => ({
+      ...prev,
+      [id]: option,
+    }));
+    setFormData((prev) => ({
+      ...prev,
+      [id]: {
+        ...prev[id],
+        backgroundImageURL: '', // Clear URL if switching to upload
+      },
+    }));
   };
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+  // Handle file selection for each slide
+  const handleFileChange = (e, id) => {
+    setSelectedFile((prev) => ({
+      ...prev,
+      [id]: e.target.files[0],
+    }));
   };
 
-  const handleSaveChanges = async (e) => {
-    e.preventDefault();
-    if (!editingSlide) return;
-
-    const formDataToSend = new FormData();
-    formDataToSend.append("title", formData.title);
-    formDataToSend.append("subtitle", formData.subtitle);
-
-    formData.backgroundImages.forEach((image) => {
-      if (image instanceof File) {
-        formDataToSend.append("backgroundImages", image); // Append new files
-      } else {
-        formDataToSend.append("existingImages", image); // Append existing URLs
-      }
-    });
-
+  // Save changes for a specific slide
+  // Save changes for a specific slide
+  const saveSlide = async (id) => {
+    const slideData = formData[id];
     try {
-      setLoading(true);
-      const response = await fetch(`${baseURL}/api/slides/${editingSlide._id}`, {
-        method: "PUT",
-        headers: {
-          "Authorization": `Bearer ${localStorage.getItem("token")}`,
-        },
-        body: formDataToSend,
-        credentials: "include",
-      });
-
-      if (response.ok) {
-        const updatedSlide = await response.json();
-        setSlides((prevSlides) =>
-          prevSlides.map((slide) => (slide._id === updatedSlide._id ? updatedSlide : slide))
-        );
-        setEditingSlide(null);
-        setFormData({
-          title: "",
-          subtitle: "",
-          backgroundImages: [],
+      // Check if the upload option is selected and a file is available
+      if (selectedOption[id] === 'upload' && selectedFile[id]) {
+        const uploadData = new FormData();
+        uploadData.append('backgroundImage', selectedFile[id]);
+  
+        // Upload image and get URL
+        const uploadResponse = await axios.post('http://localhost:5001/api/upload', uploadData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
         });
-        navigate("/slides");
-      } else {
-        const data = await response.json();
-        setErrorMessage(data.message);
+        slideData.backgroundImage = uploadResponse.data.imageUrl; // Update slide data with new image URL
       }
+  
+      // Save the slide data with either uploaded URL or URL entered manually
+      await axios.put(`http://localhost:5001/api/slides/${id}`, {
+        title: slideData.title,
+        subtitle: slideData.subtitle,
+        backgroundImage: selectedOption[id] === 'upload' ? slideData.backgroundImage : slideData.backgroundImageURL
+      });
+  
+      // Update formData for the specific slide to reflect the newly saved data
+      setFormData((prevData) => ({
+        ...prevData,
+        [id]: {
+          ...prevData[id],
+          backgroundImage: slideData.backgroundImage, // Update with new URL
+        },
+      }));
     } catch (error) {
-      setErrorMessage(error.message);
-    } finally {
-      setLoading(false);
+      console.error('Error saving slide:', error);
+    }
+  };
+
+
+  // Delete a slide
+  const deleteSlide = async (id) => {
+    try {
+      await axios.delete(`http://localhost:5001/api/slides/${id}`);
+      setSlides(slides.filter((slide) => slide._id !== id));
+    } catch (error) {
+      console.error('Error deleting slide:', error);
     }
   };
 
   return (
-    <div className="max-w-lg mx-auto mt-10">
-      <h2 className="text-2xl font-bold mb-6 text-center">Edit Slide</h2>
-      {errorMessage && <p className="text-red-500 text-center">{errorMessage}</p>}
-
-      {editingSlide && (
-        <form onSubmit={handleSaveChanges} encType="multipart/form-data" className="space-y-4">
-          <div>
-            <label htmlFor="title" className="block text-sm font-bold mb-2">
-              Title
-            </label>
-            <input
-              type="text"
-              id="title"
-              name="title"
-              value={formData.title}
-              onChange={handleChange}
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            />
-          </div>
-          <div>
-            <label htmlFor="subtitle" className="block text-sm font-bold mb-2">
-              Subtitle
-            </label>
-            <input
-              type="text"
-              id="subtitle"
-              name="subtitle"
-              value={formData.subtitle}
-              onChange={handleChange}
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            />
-          </div>
-
-          <div>
-            <label htmlFor="backgroundImages" className="block text-sm font-bold mb-2">
-              Upload Images
-            </label>
-            <input
-              type="file"
-              id="backgroundImages"
-              name="backgroundImages"
-              onChange={handleImageChange}
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              accept="image/*"
-              multiple
-            />
-          </div>
-
-          {formData.backgroundImages.length > 0 && (
-            <div className="mt-4">
-              <h3 className="block text-sm font-bold mb-2">Current Images:</h3>
-              <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                {formData.backgroundImages.map((image, index) => (
-                  <li key={index} className="flex flex-col items-center bg-gray-100 p-2 rounded-md">
-                    {!(image instanceof File) ? (
-                      <img
-                        src={`${baseURL}/${image}`}
-                        alt={`Slide Image ${index}`}
-                        className="w-full h-32 object-cover rounded-md mb-2"
-                      />
-                    ) : (
-                      <span className="mb-2 text-sm">{image.name}</span>
-                    )}
-                    <button
-                      type="button"
-                      className="bg-red-500 text-white px-2 py-1 rounded text-sm"
-                      onClick={() => handleDeleteImage(index)}
-                    >
-                      Delete
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-
-          <button
-            type="submit"
-            className="w-full sm:w-auto bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out"
-          >
-            {loading ? "Saving..." : "Save Changes"}
-          </button>
-        </form>
-      )}
-
-      <ul>
+    <div className="max-w-4xl mx-auto p-8">
+      <h2 className="text-3xl font-semibold mb-6 text-center text-gray-800">Edit Slides Form</h2>
+      <form className="space-y-8">
         {slides.map((slide) => (
-          <li key={slide._id} className="mb-4 p-4 border rounded-lg">
-            <h3 className="font-bold">{slide.title}</h3>
-            <p>{slide.subtitle}</p>
-            <button
-              onClick={() => handleEdit(slide._id)}
-              className="bg-blue-500 text-white px-4 py-2 mr-2 rounded"
-            >
-              Edit
-            </button>
-            <button
-              onClick={() => handleDelete(slide._id)}
-              className="bg-red-500 text-white px-4 py-2 rounded"
-            >
-              Delete
-            </button>
-          </li>
+          <div key={slide._id} className="bg-white shadow-md rounded-lg p-6 space-y-4">
+            <div className="flex flex-col space-y-2">
+              <label className="font-medium text-gray-700">Title</label>
+              <input
+                type="text"
+                name="title"
+                value={formData[slide._id]?.title || ''} // Fallback to empty string
+                onChange={(e) => handleInputChange(e, slide._id)}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+            <div className="flex flex-col space-y-2">
+              <label className="font-medium text-gray-700">Subtitle</label>
+              <input
+                type="text"
+                name="subtitle"
+                value={formData[slide._id]?.subtitle || ''} // Fallback to empty string
+                onChange={(e) => handleInputChange(e, slide._id)}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+            <div className="flex flex-col space-y-2">
+              <label className="font-medium text-gray-700">Background Image</label>
+              <div className="flex items-center space-x-4">
+                <label className="flex items-center space-x-2">
+                  <input
+                    type="radio"
+                    name={`backgroundOption-${slide._id}`}
+                    checked={selectedOption[slide._id] === 'url'}
+                    onChange={() => handleOptionChange(slide._id, 'url')}
+                  />
+                  <span>Image URL</span>
+                </label>
+                <label className="flex items-center space-x-2">
+                  <input
+                    type="radio"
+                    name={`backgroundOption-${slide._id}`}
+                    checked={selectedOption[slide._id] === 'upload'}
+                    onChange={() => handleOptionChange(slide._id, 'upload')}
+                  />
+                  <span>Upload from Computer</span>
+                </label>
+              </div>
+              {selectedOption[slide._id] === 'url' ? (
+                <input
+                  type="text"
+                  name="backgroundImageURL"
+                  value={formData[slide._id]?.backgroundImageURL || ''} // Fallback to empty string
+                  onChange={(e) => handleInputChange(e, slide._id)}
+                  placeholder="Enter image URL"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              ) : (
+                <input
+                  type="file"
+                  onChange={(e) => handleFileChange(e, slide._id)}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              )}
+            </div>
+            <div className="flex justify-end space-x-4 pt-4">
+              <button
+                type="button"
+                onClick={() => saveSlide(slide._id)}
+                className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+              >
+                Save
+              </button>
+              <button
+                type="button"
+                onClick={() => deleteSlide(slide._id)}
+                className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
         ))}
-      </ul>
+      </form>
     </div>
   );
 };
 
-export default EditSlide;
+export default EditSlidesForm;
