@@ -81,31 +81,22 @@ router.post("/slides", upload.single("backgroundImage"), async (req, res) => {
 
 
 // Update a slide
-router.put("/slides/:id", upload.single("backgroundImage"), async (req, res) => {
+// slides.route.js
+router.put('/slides/:id', async (req, res) => {
   try {
-    const { title, subtitle, backgroundImageURL } = req.body;
-    
-    let backgroundImage;
-    if (req.file) {
-      backgroundImage = `/uploads/${req.file.filename}`;
-    } else if (backgroundImageURL) {
-      backgroundImage = backgroundImageURL;
-    }
-
+    const { title, subtitle, backgroundImage } = req.body;
     const updatedSlide = await Slide.findByIdAndUpdate(
       req.params.id,
-      { title, subtitle, backgroundImage },
+      {
+        title,
+        subtitle,
+        backgroundImage,
+      },
       { new: true }
     );
-
-    if (!updatedSlide) {
-      return res.status(404).json({ error: "Slide not found" });
-    }
-
-    res.status(200).json({ message: "Slide updated successfully", slide: updatedSlide });
+    res.json(updatedSlide);
   } catch (error) {
-    console.error("Error updating slide:", error);
-    res.status(500).json({ error: "Failed to update slide" });
+    res.status(500).json({ error: error.message });
   }
 });
 

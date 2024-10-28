@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import path from 'path';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import multer from 'multer'; // Import multer for file handling
 import slideRoutes from './routes/slides.route.js'; 
 import projectRoutes from './routes/project.route.js';
 import { fileURLToPath } from 'url';
@@ -15,16 +16,13 @@ const __dirname = path.dirname(__filename);
 
 // MongoDB Connection
 mongoose
-.connect(process.env.MONGO, { useNewUrlParser: true, useUnifiedTopology: true })
+  .connect(process.env.MONGO, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
     console.log("MongoDB is connected");
   })
   .catch((error) => {
     console.error("MongoDB connection error:", error);
   });
-
-// Define __dirname for ES modules
-// const __dirname = path.resolve();
 
 const allowedOrigins = [
   'http://localhost:5173' // For local frontend during development
@@ -39,12 +37,33 @@ app.use(cors({ origin: allowedOrigins, credentials: true }));
 
 // Serve static files
 app.use(express.static(path.join(__dirname, 'realestate', 'dist')));
-app.use('/uploads', express.static('uploads'));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); // Serve uploads folder as static
+
+// Set up multer for file uploads
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads'); // Files will be saved in 'uploads' folder
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + '-' + file.originalname); // Set unique filename
+  },
+});
+const upload = multer({ storage: storage });
+
+// Upload route
+app.post('/api/upload', upload.single('backgroundImage'), (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ message: 'No file uploaded' });
+  }
+  const imageUrl = `/uploads/${req.file.filename}`;
+  res.status(200).json({ imageUrl });
+});
 
 // API Routes
 app.use("/api", slideRoutes); 
 app.use("/api", projectRoutes);
 
+// Error handling middleware for multer and other errors
 app.use((err, req, res, next) => {
   console.error(err.stack);
   if (err instanceof multer.MulterError) {
@@ -55,9 +74,6 @@ app.use((err, req, res, next) => {
   }
   res.status(500).json({ error: 'Something broke!' });
 });
-
-
-// Register the slides route with base path /api
 
 // Start Server
 app.listen(5001, () => {

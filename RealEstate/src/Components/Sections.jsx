@@ -29,83 +29,84 @@ import { Phone } from 'lucide-react'; // Import the Phone icon
   //   },
   // ];
   export const Home = () => {
-    const [currentSlide, setCurrentSlide] = useState(0);
-    const [slides, setSlides] = useState([]);
-    
-    // Fetch slides data from API
-    useEffect(() => {
-      const fetchSlides = async () => {
-        try {
-          const response = await fetch("http://localhost:5001/api/slides");
-          if (response.ok) {
-            const data = await response.json();
-            setSlides(data);
-          } else {
-            console.error("Failed to fetch slides:", response.statusText);
-          }
-        } catch (error) {
-          console.error("Error fetching slides:", error);
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [slides, setSlides] = useState([]);
+
+  // Fetch slides data from API
+  useEffect(() => {
+    const fetchSlides = async () => {
+      try {
+        const response = await fetch("http://localhost:5001/api/slides");
+        if (response.ok) {
+          const data = await response.json();
+          setSlides(data);
+          console.log("Fetched slides:", data); // Debugging line
+        } else {
+          console.error("Failed to fetch slides:", response.statusText);
         }
-      };
-  
-      fetchSlides();
-    }, []);
-  
-    // Auto-advance slides
-    useEffect(() => {
-      const timer = setInterval(
-        () => setCurrentSlide((prev) => (prev + 1) % slides.length),
-        5000
-      );
-      return () => clearInterval(timer);
-    }, [slides.length]);
-  
-    return (
-      <section id="home" className="relative w-full h-screen overflow-hidden">
-        {slides.map((slide, index) => (
-          <div
-            key={index}
-            className={`absolute top-0 left-0 w-full h-full transition-opacity duration-500 ease-in-out ${
-              index === currentSlide ? "opacity-100" : "opacity-0"
-            }`}
-          >
-            <img
-              src={`http://localhost:5001${slide.backgroundImage}`}
-              alt={slide.title}
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 bg-black bg-opacity-40 flex flex-col justify-center items-center text-white p-4">
-              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-2 sm:mb-4 text-center">
-                {slide.title}
-              </h1>
-              <p className="text-lg sm:text-xl md:text-2xl mb-4 sm:mb-6 md:mb-8 text-center">
-                {slide.subtitle}
-              </p>
-              <a
-                href="tel:+919912344477"
-                className="bg-[#f2d39a] text-[#365359] font-bold py-2 px-4 rounded text-sm sm:text-base transition duration-300 ease-in-out transform hover:scale-105 hover:bg-[#e6c38c] flex items-center"
-              >
-                <Phone size={20} className="mr-2" />
-                Book a Visit
-              </a>
-            </div>
-          </div>
-        ))}
-        <button
-          onClick={() => setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length)}
-          className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full hidden sm:block hover:bg-opacity-75 transition-all"
-        >
-          &#10094;
-        </button>
-        <button
-          onClick={() => setCurrentSlide((prev) => (prev + 1) % slides.length)}
-          className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full hidden sm:block hover:bg-opacity-75 transition-all"
-        >
-          &#10095;
-        </button>
-      </section>
+      } catch (error) {
+        console.error("Error fetching slides:", error);
+      }
+    };
+
+    fetchSlides();
+  }, []);
+
+  // Auto-advance slides
+  useEffect(() => {
+    const timer = setInterval(
+      () => setCurrentSlide((prev) => (prev + 1) % slides.length),
+      5000
     );
-  };
+    return () => clearInterval(timer);
+  }, [slides]);
+
+  return (
+    <section id="home" className="relative w-full h-screen overflow-hidden">
+      {slides.map((slide, index) => (
+        <div
+          key={index}
+          className={`absolute top-0 left-0 w-full h-full transition-opacity duration-500 ease-in-out ${
+            index === currentSlide ? "opacity-100" : "opacity-0"
+          }`}
+        >
+          <img
+            src={`http://localhost:5001${slide.backgroundImage}?${new Date().getTime()}`}
+            alt={slide.title}
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-black bg-opacity-40 flex flex-col justify-center items-center text-white p-4">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-2 sm:mb-4 text-center">
+              {slide.title}
+            </h1>
+            <p className="text-lg sm:text-xl md:text-2xl mb-4 sm:mb-6 md:mb-8 text-center">
+              {slide.subtitle}
+            </p>
+            <a
+              href="tel:+919912344477"
+              className="bg-[#f2d39a] text-[#365359] font-bold py-2 px-4 rounded text-sm sm:text-base transition duration-300 ease-in-out transform hover:scale-105 hover:bg-[#e6c38c] flex items-center"
+            >
+              Book a Visit
+            </a>
+          </div>
+        </div>
+      ))}
+      <button
+        onClick={() => setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length)}
+        className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full hidden sm:block hover:bg-opacity-75 transition-all"
+      >
+        &#10094;
+      </button>
+      <button
+        onClick={() => setCurrentSlide((prev) => (prev + 1) % slides.length)}
+        className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full hidden sm:block hover:bg-opacity-75 transition-all"
+      >
+        &#10095;
+      </button>
+    </section>
+  );
+};
+
   
 
 export const Overview = () => (
