@@ -12,40 +12,42 @@ export const ProjectForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Create FormData to handle file upload
     const formData = new FormData();
     formData.append("title", title);
     formData.append("description", description);
     formData.append("category", category);
 
-    // Conditionally append either the image URL or the file
     if (imageSourceType === "url") {
-      formData.append("image", imageUrl); // Send URL as a string
+      formData.append("image", imageUrl);
     } else if (imageFile) {
-      formData.append("image", imageFile); // Send the image file
+      formData.append("image", imageFile);
     }
 
     try {
       const response = await fetch("http://localhost:5001/api/projects", {
         method: "POST",
-        body: formData,
+        body: formData, // Don't set Content-Type header - it will be set automatically
       });
 
       if (response.ok) {
+        const result = await response.json();
         setMessage("Project added successfully!");
+        // Clear form
         setTitle("");
         setDescription("");
         setCategory("");
         setImageUrl("");
         setImageFile(null);
       } else {
-        setMessage("Failed to add project. Please try again.");
+        const error = await response.json();
+        setMessage(error.message || "Failed to add project. Please try again.");
       }
     } catch (error) {
       console.error("Error:", error);
       setMessage("An error occurred. Please try again later.");
     }
   };
+
 
   return (
     <section>

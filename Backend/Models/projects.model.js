@@ -8,22 +8,22 @@ const projectSchema = new mongoose.Schema({
         required: true,
         default: uuidv4, // Automatically generate a unique ID
       },
-  title: {
+    title: {
     type: String,
     required: true,
-  },
-  description: {
-    type: String,
-    required: true,
-  },
-  image: {
-    type: String,
-    required: true,
-  },
-  category: {
-    type: String,
-    required: true,
-  },
+    },
+    description: {
+      type: String,
+      required: true,
+    },
+    image: {
+      type: String,
+      required: true,
+    },
+    category: {
+      type: String,
+      required: true,
+    },
 });
 
 
