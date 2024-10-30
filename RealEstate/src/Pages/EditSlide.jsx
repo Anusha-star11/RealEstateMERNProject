@@ -112,7 +112,7 @@ const EditSlidesForm = () => {
   return (
     <div className="bg-gray-100 min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl w-full p-8 bg-white shadow-2xl rounded-lg">
-        <h2 className="text-4xl font-semibold mb-6 text-center text-indigo-700">Edit Slides Form</h2>
+        <h2 className="text-4xl font-semibold mb-6 text-center text-indigo-700">Edit Slides</h2>
 
         {successMessage && (
           <div className="mb-6 p-4 text-green-900 bg-green-100 border border-green-300 rounded-lg text-center animate-fade-in">
