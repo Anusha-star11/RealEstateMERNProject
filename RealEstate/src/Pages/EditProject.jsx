@@ -1,36 +1,37 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const EditSlidesForm = () => {
-  const [slides, setSlides] = useState([]);
+const EditProjectForm = () => {
+  const [projects, setProjects] = useState([]);
   const [formData, setFormData] = useState({});
   const [selectedOption, setSelectedOption] = useState({});
   const [selectedFile, setSelectedFile] = useState({});
   const [successMessage, setSuccessMessage] = useState('');
 
   useEffect(() => {
-    fetchSlides();
+    fetchProjects();
   }, []);
 
-  const fetchSlides = async () => {
+  const fetchProjects = async () => {
     try {
-      const response = await axios.get('http://localhost:5001/api/slides');
-      setSlides(response.data);
+      const response = await axios.get('http://localhost:5001/api/projects');
+      setProjects(response.data);
 
       const initialFormData = {};
       const initialOptionData = {};
-      response.data.forEach((slide) => {
-        initialFormData[slide._id] = {
-          title: slide.title || '',
-          subtitle: slide.subtitle || '',
-          backgroundImageURL: slide.backgroundImage || '',
+      response.data.forEach((project) => {
+        initialFormData[project._id] = {
+          title: project.title || '',
+          description: project.description || '',
+          image: project.image || '',
+          imageURL: project.image || '', // Pre-fill image URL if available
         };
-        initialOptionData[slide._id] = 'url';
+        initialOptionData[project._id] = 'url'; // Default to URL option
       });
       setFormData(initialFormData);
       setSelectedOption(initialOptionData);
     } catch (error) {
-      console.error('Error fetching slides:', error);
+      console.error('Error fetching projects:', error);
     }
   };
 
@@ -54,7 +55,7 @@ const EditSlidesForm = () => {
       ...prev,
       [id]: {
         ...prev[id],
-        backgroundImageURL: '',
+        imageURL: '', // Reset URL when changing option
       },
     }));
   };
@@ -66,53 +67,52 @@ const EditSlidesForm = () => {
     }));
   };
 
-  const saveSlide = async (id) => {
-    const slideData = formData[id];
+  const saveProject = async (id) => {
+    const projectData = formData[id];
+    const updatedData = new FormData();
+  
     try {
       if (selectedOption[id] === 'upload' && selectedFile[id]) {
-        const uploadData = new FormData();
-        uploadData.append('backgroundImage', selectedFile[id]);
-
-        const uploadResponse = await axios.post('http://localhost:5001/api/upload', uploadData, {
-          headers: { 'Content-Type': 'multipart/form-data' },
-        });
-        slideData.backgroundImage = uploadResponse.data.imageUrl;
+        updatedData.append('image', selectedFile[id]); // Ensure this matches 'image' in multer
+      } else {
+        updatedData.append('image', projectData.imageURL); // Use provided URL if no file is uploaded
       }
-
-      await axios.put(`http://localhost:5001/api/slides/${id}`, {
-        title: slideData.title,
-        subtitle: slideData.subtitle,
-        backgroundImage: selectedOption[id] === 'upload' ? slideData.backgroundImage : slideData.backgroundImageURL
-      });
-
-      setFormData((prevData) => ({
-        ...prevData,
-        [id]: {
-          ...prevData[id],
-          backgroundImage: slideData.backgroundImage,
+  
+      // Append other project data
+      updatedData.append('title', projectData.title);
+      updatedData.append('description', projectData.description);
+      updatedData.append('category', projectData.category);
+  
+      await axios.put(`http://localhost:5001/api/projects/${id}`, updatedData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
         },
-      }));
-
-      setSuccessMessage('Slide updated successfully!');
-      setTimeout(() => setSuccessMessage(''), 3000);
+      });
+  
+      setSuccessMessage('Project updated successfully!');
+      setTimeout(() => setSuccessMessage(''), 3000); // Clear the message after 3 seconds
+      fetchProjects(); // Refresh projects list after saving
     } catch (error) {
-      console.error('Error saving slide:', error);
+      console.error('Error saving project:', error);
     }
   };
+  
 
-  const deleteSlide = async (id) => {
+  const deleteProject = async (id) => {
     try {
-      await axios.delete(`http://localhost:5001/api/slides/${id}`);
-      setSlides(slides.filter((slide) => slide._id !== id));
+      await axios.delete(`http://localhost:5001/api/projects/${id}`);
+      setProjects(projects.filter((project) => project._id !== id));
+      setSuccessMessage('Project deleted successfully!');
+      setTimeout(() => setSuccessMessage(''), 3000); // Clear the message after 3 seconds
     } catch (error) {
-      console.error('Error deleting slide:', error);
+      console.error('Error deleting project:', error);
     }
   };
 
   return (
     <div className="bg-gray-100 min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl w-full p-8 bg-white shadow-2xl rounded-lg">
-        <h2 className="text-4xl font-semibold mb-6 text-center text-indigo-700">Edit Slides</h2>
+        <h2 className="text-4xl font-semibold mb-6 text-center text-indigo-700">Edit Projects</h2>
 
         {successMessage && (
           <div className="mb-6 p-4 text-green-900 bg-green-100 border border-green-300 rounded-lg text-center animate-fade-in">
@@ -121,63 +121,62 @@ const EditSlidesForm = () => {
         )}
 
         <form className="space-y-8">
-          {slides.map((slide) => (
-            <div key={slide._id} className="bg-gray-50 shadow rounded-lg p-6 space-y-4 hover:shadow-lg transition-shadow duration-200">
+          {projects.map((project) => (
+            <div key={project._id} className="bg-gray-50 shadow rounded-lg p-6 space-y-4 hover:shadow-lg transition-shadow duration-200">
               <div className="flex flex-col space-y-2">
                 <label className="font-medium text-gray-600">Title</label>
                 <input
                   type="text"
                   name="title"
-                  value={formData[slide._id]?.title || ''}
-                  onChange={(e) => handleInputChange(e, slide._id)}
+                  value={formData[project._id]?.title || ''}
+                  onChange={(e) => handleInputChange(e, project._id)}
                   className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />
               </div>
               <div className="flex flex-col space-y-2">
-                <label className="font-medium text-gray-600">Subtitle</label>
-                <input
-                  type="text"
-                  name="subtitle"
-                  value={formData[slide._id]?.subtitle || ''}
-                  onChange={(e) => handleInputChange(e, slide._id)}
+                <label className="font-medium text-gray-600">Description</label>
+                <textarea
+                  name="description"
+                  value={formData[project._id]?.description || ''}
+                  onChange={(e) => handleInputChange(e, project._id)}
                   className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />
               </div>
               <div className="flex flex-col space-y-2">
-                <label className="font-medium text-gray-600">Background Image</label>
+                <label className="font-medium text-gray-600">Select Image Source</label>
                 <div className="flex items-center space-x-4">
                   <label className="flex items-center space-x-2">
                     <input
                       type="radio"
-                      name={`backgroundOption-${slide._id}`}
-                      checked={selectedOption[slide._id] === 'url'}
-                      onChange={() => handleOptionChange(slide._id, 'url')}
+                      name={`imageOption-${project._id}`}
+                      checked={selectedOption[project._id] === 'url'}
+                      onChange={() => handleOptionChange(project._id, 'url')}
                     />
                     <span className="text-gray-600">Image URL</span>
                   </label>
                   <label className="flex items-center space-x-2">
                     <input
                       type="radio"
-                      name={`backgroundOption-${slide._id}`}
-                      checked={selectedOption[slide._id] === 'upload'}
-                      onChange={() => handleOptionChange(slide._id, 'upload')}
+                      name={`imageOption-${project._id}`}
+                      checked={selectedOption[project._id] === 'upload'}
+                      onChange={() => handleOptionChange(project._id, 'upload')}
                     />
                     <span className="text-gray-600">Upload from Computer</span>
                   </label>
                 </div>
-                {selectedOption[slide._id] === 'url' ? (
+                {selectedOption[project._id] === 'url' ? (
                   <input
                     type="text"
-                    name="backgroundImageURL"
-                    value={formData[slide._id]?.backgroundImageURL || ''}
-                    onChange={(e) => handleInputChange(e, slide._id)}
+                    name="imageURL"
+                    value={formData[project._id]?.imageURL || ''}
+                    onChange={(e) => handleInputChange(e, project._id)}
                     placeholder="Enter image URL"
                     className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   />
                 ) : (
                   <input
                     type="file"
-                    onChange={(e) => handleFileChange(e, slide._id)}
+                    onChange={(e) => handleFileChange(e, project._id)}
                     className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   />
                 )}
@@ -185,14 +184,14 @@ const EditSlidesForm = () => {
               <div className="flex justify-end space-x-4 pt-4">
                 <button
                   type="button"
-                  onClick={() => saveSlide(slide._id)}
+                  onClick={() => saveProject(project._id)}
                   className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors"
                 >
                   Save
                 </button>
                 <button
                   type="button"
-                  onClick={() => deleteSlide(slide._id)}
+                  onClick={() => deleteProject(project._id)}
                   className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors"
                 >
                   Delete
@@ -206,7 +205,4 @@ const EditSlidesForm = () => {
   );
 };
 
-export default EditSlidesForm;
-
-
-
+export default EditProjectForm;

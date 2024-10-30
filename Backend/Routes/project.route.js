@@ -19,7 +19,7 @@ const storage = multer.diskStorage({
 const upload = multer({ 
   storage: storage,
   limits: {
-    fileSize: 5 * 1024 * 1024 // 5MB limit
+    fileSize: 15 * 1024 * 1024 // 5MB limit
   }
 });
 
@@ -70,5 +70,54 @@ router.get('/projects', async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
+
+router.get('/projects/:id', async (req, res) => {
+  try {
+    const project = await Project.findById(req.params.id);
+    if (project) {
+      res.json(project);
+    } else {
+      res.status(404).json({ message: 'Project not found' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Route to update a project by ID
+router.put('/projects/:id', upload.single('image'), async (req, res) => {
+  try {
+    const project = await Project.findById(req.params.id);
+    if (!project) return res.status(404).json({ message: 'Project not found' });
+
+    project.title = req.body.title || project.title;
+    project.description = req.body.description || project.description;
+    project.category = req.body.category || project.category;
+    if (req.file) {
+      project.image = `/uploads/${req.file.filename}`;
+    } else if (req.body.image) {
+      project.image = req.body.image; // Use the URL provided in the request body
+    }
+    await project.save();
+    res.json(project);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Route to delete a project by ID
+router.delete('/projects/:id', async (req, res) => {
+  try {
+    const project = await Project.findByIdAndDelete(req.params.id);
+    if (project) {
+      res.json({ message: 'Project deleted successfully' });
+    } else {
+      res.status(404).json({ message: 'Project not found' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 
 export default router;
