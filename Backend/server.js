@@ -51,18 +51,29 @@ const storage = multer.diskStorage({
     cb(null, 'uploads'); // Files will be saved in 'uploads' folder
   },
   filename: (req, file, cb) => {
-    cb(null, Date.now() + '-' + file.originalname); // Set unique filename
-  },
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
+  }
 });
-const upload = multer({ storage: storage });
+const upload = multer({ 
+  storage: storage,
+  limits: {
+    fileSize: 15 * 1024 * 1024 // 5MB limit
+  }
+});
 
 // Upload route
 app.post('/api/upload', upload.single('backgroundImage'), (req, res) => {
-  if (!req.file) {
-    return res.status(400).json({ message: 'No file uploaded' });
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: 'No file uploaded' });
+    }
+    const imageUrl = `http://localhost:5001/uploads/${req.file.filename}`;
+    res.status(200).json({ imageUrl });
+  } catch (error) {
+    console.error('Error uploading file:', error);
+    res.status(500).json({ message: 'Error uploading file' });
   }
-  const imageUrl = `/uploads/${req.file.filename}`;
-  res.status(200).json({ imageUrl });
 });
 
 // API Routes

@@ -352,7 +352,7 @@ export const Overview = () => (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {filteredProjects.map((project) => (
                 <motion.div
-                  key={project.id}
+                  key={project._id}
                   className="bg-white rounded-lg shadow-md relative overflow-hidden group"
                   initial={{ opacity: 0, y: 50 }}
                   whileInView={{ opacity: 1, y: 0 }}

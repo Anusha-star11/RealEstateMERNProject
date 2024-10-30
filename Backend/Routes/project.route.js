@@ -11,34 +11,50 @@ const storage = multer.diskStorage({
     cb(null, 'uploads/');
   },
   filename: (req, file, cb) => {
-    cb(null, `project-${Date.now()}${path.extname(file.originalname)}`);
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, 'project-' + uniqueSuffix + path.extname(file.originalname));
   }
 });
 
-const upload = multer({ storage: storage });
+const upload = multer({ 
+  storage: storage,
+  limits: {
+    fileSize: 5 * 1024 * 1024 // 5MB limit
+  }
+});
+
+// Upload image endpoint
+router.post('/upload', upload.single('image'), (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: 'No file uploaded' });
+    }
+    const imageUrl = `/uploads/${req.file.filename}`;
+    res.status(200).json({ imageUrl });
+  } catch (error) {
+    console.error('Error uploading file:', error);
+    res.status(500).json({ message: 'Error uploading file' });
+  }
+});
 
 // Create new project
-router.post('/projects', upload.single('image'), async (req, res) => {
+router.post('/projects', async (req, res) => {
   try {
-    const { title, description, category } = req.body;
-    let imageUrl;
+    const { title, description, category, image } = req.body;
 
-    // Handle both file uploads and image URLs
-    if (req.file) {
-      imageUrl = `/uploads/${req.file.filename}`;
-    } else {
-      imageUrl = req.body.image;
+    if (!title || !description || !category || !image) {
+      return res.status(400).json({ message: 'All fields are required' });
     }
 
     const newProject = new Project({
       title,
       description,
       category,
-      image: imageUrl
+      image
     });
 
     const savedProject = await newProject.save();
-    res.status(201).json(savedProject);
+    res.status(201).json({ message: "Project added successfully", project: savedProject });
   } catch (error) {
     console.error('Error creating project:', error);
     res.status(500).json({ message: error.message });

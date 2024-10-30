@@ -1,4 +1,5 @@
 import { useState } from "react";
+import axios from 'axios';
 
 export const ProjectForm = () => {
   const [title, setTitle] = useState("");
@@ -11,42 +12,50 @@ export const ProjectForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const formData = new FormData();
-    formData.append("title", title);
-    formData.append("description", description);
-    formData.append("category", category);
-
-    if (imageSourceType === "url") {
-      formData.append("image", imageUrl);
-    } else if (imageFile) {
-      formData.append("image", imageFile);
-    }
-
+    
     try {
-      const response = await fetch("http://localhost:5001/api/projects", {
-        method: "POST",
-        body: formData, // Don't set Content-Type header - it will be set automatically
-      });
-
-      if (response.ok) {
-        const result = await response.json();
-        setMessage("Project added successfully!");
-        // Clear form
-        setTitle("");
-        setDescription("");
-        setCategory("");
-        setImageUrl("");
-        setImageFile(null);
+      let finalImageUrl = '';
+      
+      // If uploading a file, handle it first
+      if (imageSourceType === "upload" && imageFile) {
+        const uploadFormData = new FormData();
+        uploadFormData.append("backgroundImage", imageFile);
+        
+        // First, upload the image
+        const uploadResponse = await axios.post("http://localhost:5001/api/upload", uploadFormData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+        
+        finalImageUrl = uploadResponse.data.imageUrl;
       } else {
-        const error = await response.json();
-        setMessage(error.message || "Failed to add project. Please try again.");
+        finalImageUrl = imageUrl; // Use the URL directly if imageSourceType is "url"
       }
+
+      // Then create the project with the image URL
+      const projectData = {
+        title,
+        description,
+        category,
+        image: finalImageUrl,
+      };
+
+      const response = await axios.post("http://localhost:5001/api/projects", projectData);
+
+      setMessage("Project added successfully!");
+      // Clear form
+      setTitle("");
+      setDescription("");
+      setCategory("");
+      setImageUrl("");
+      setImageFile(null);
     } catch (error) {
       console.error("Error:", error);
-      setMessage("An error occurred. Please try again later.");
+      setMessage(error.response?.data?.message || "An error occurred. Please try again later.");
     }
   };
+
 
 
   return (
