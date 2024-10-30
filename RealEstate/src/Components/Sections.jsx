@@ -31,21 +31,26 @@ import { Phone } from 'lucide-react'; // Import the Phone icon
   export const Home = () => {
     const [currentSlide, setCurrentSlide] = useState(0);
     const [slides, setSlides] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
   
     // Fetch slides data from API
     useEffect(() => {
       const fetchSlides = async () => {
+        setIsLoading(true);
         try {
           const response = await fetch("http://localhost:5001/api/slides");
-          if (response.ok) {
-            const data = await response.json();
-            setSlides(data);
-            console.log("Fetched slides:", data); // Debugging line
-          } else {
-            console.error("Failed to fetch slides:", response.statusText);
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
           }
+          const data = await response.json();
+          setSlides(data);
+          console.log("Fetched slides:", data);
         } catch (error) {
           console.error("Error fetching slides:", error);
+          setError("Failed to load slides. Please try again later.");
+        } finally {
+          setIsLoading(false);
         }
       };
   
@@ -54,6 +59,8 @@ import { Phone } from 'lucide-react'; // Import the Phone icon
   
     // Auto-advance slides
     useEffect(() => {
+      if (slides.length === 0) return;
+  
       const timer = setInterval(
         () => setCurrentSlide((prev) => (prev + 1) % slides.length),
         5000
@@ -61,20 +68,64 @@ import { Phone } from 'lucide-react'; // Import the Phone icon
       return () => clearInterval(timer);
     }, [slides]);
   
+    // Helper function to determine image URL
+    const getImageUrl = (imageUrl) => {
+      if (!imageUrl) return '';
+      return imageUrl.startsWith('http') 
+        ? imageUrl 
+        : `http://localhost:5001${imageUrl}`;
+    };
+  
+    // Loading state
+    if (isLoading) {
+      return (
+        <div className="w-full h-screen flex justify-center items-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
+        </div>
+      );
+    }
+  
+    // Error state
+    if (error) {
+      return (
+        <div className="w-full h-screen flex justify-center items-center">
+          <div className="text-red-500 text-xl">{error}</div>
+        </div>
+      );
+    }
+  
+    // No slides state
+    if (slides.length === 0) {
+      return (
+        <div className="w-full h-screen flex justify-center items-center">
+          <div className="text-gray-500 text-xl">No slides available</div>
+        </div>
+      );
+    }
+  
     return (
       <section id="home" className="relative w-full h-screen overflow-hidden">
+        {/* Slides */}
         {slides.map((slide, index) => (
           <div
-            key={index}
+            key={slide._id || index}
             className={`absolute top-0 left-0 w-full h-full transition-opacity duration-500 ease-in-out ${
               index === currentSlide ? "opacity-100" : "opacity-0"
             }`}
           >
+            {/* Background Image */}
             <img
-              src={`http://localhost:5001${slide.backgroundImage}?${new Date().getTime()}`}
+              src={getImageUrl(slide.backgroundImage)}
               alt={slide.title}
               className="w-full h-full object-cover"
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = '/fallback-image.jpg'; // Add a fallback image
+                console.log(`Failed to load image: ${slide.backgroundImage}`);
+              }}
             />
+  
+            {/* Overlay Content */}
             <div className="absolute inset-0 bg-black bg-opacity-40 flex flex-col justify-center items-center text-white p-4">
               <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-2 sm:mb-4 text-center">
                 {slide.title}
@@ -84,25 +135,63 @@ import { Phone } from 'lucide-react'; // Import the Phone icon
               </p>
               <a
                 href="tel:+919912344477"
-                className="bg-[#f2d39a] text-[#365359] font-bold py-2 px-4 rounded text-sm sm:text-base transition duration-300 ease-in-out transform hover:scale-105 hover:bg-[#e6c38c] flex items-center"
+                className="bg-[#f2d39a] text-[#365359] font-bold py-2 px-4 rounded text-sm sm:text-base 
+                         transition duration-300 ease-in-out transform hover:scale-105 hover:bg-[#e6c38c] 
+                         flex items-center"
               >
                 Book a Visit
               </a>
             </div>
           </div>
         ))}
-        <button
-          onClick={() => setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length)}
-          className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full hidden sm:block hover:bg-opacity-75 transition-all"
-        >
-          &#10094;
-        </button>
-        <button
-          onClick={() => setCurrentSlide((prev) => (prev + 1) % slides.length)}
-          className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full hidden sm:block hover:bg-opacity-75 transition-all"
-        >
-          &#10095;
-        </button>
+  
+        {/* Navigation Buttons */}
+        {slides.length > 1 && (
+          <>
+            <button
+              onClick={() => 
+                setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length)
+              }
+              className="absolute top-1/2 left-4 transform -translate-y-1/2 
+                       bg-black bg-opacity-50 text-white p-2 rounded-full 
+                       hidden sm:block hover:bg-opacity-75 transition-all
+                       focus:outline-none focus:ring-2 focus:ring-white"
+              aria-label="Previous slide"
+            >
+              &#10094;
+            </button>
+            <button
+              onClick={() => 
+                setCurrentSlide((prev) => (prev + 1) % slides.length)
+              }
+              className="absolute top-1/2 right-4 transform -translate-y-1/2 
+                       bg-black bg-opacity-50 text-white p-2 rounded-full 
+                       hidden sm:block hover:bg-opacity-75 transition-all
+                       focus:outline-none focus:ring-2 focus:ring-white"
+              aria-label="Next slide"
+            >
+              &#10095;
+            </button>
+          </>
+        )}
+  
+        {/* Slide Indicators */}
+        <div className="absolute bottom-4 left-0 right-0 flex justify-center space-x-2">
+          {slides.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentSlide(index)}
+              className={`w-3 h-3 rounded-full transition-all duration-300 
+                       focus:outline-none focus:ring-2 focus:ring-white
+                       ${
+                         index === currentSlide 
+                           ? "bg-white" 
+                           : "bg-white bg-opacity-50 hover:bg-opacity-75"
+                       }`}
+              aria-label={`Go to slide ${index + 1}`}
+            />
+          ))}
+        </div>
       </section>
     );
   };

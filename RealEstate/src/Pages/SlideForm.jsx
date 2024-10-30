@@ -42,12 +42,12 @@ export const SlideForm = () => {
     setError("");
     setShowSuccessMessage(false);
     setIsSubmitting(true);
-
+  
     try {
       const formData = new FormData();
       formData.append("title", title);
       formData.append("subtitle", subtitle);
-
+  
       if (backgroundImageType === "upload" && backgroundImage) {
         formData.append("backgroundImage", backgroundImage);
       } else if (backgroundImageType === "url" && backgroundImageURL) {
@@ -57,20 +57,24 @@ export const SlideForm = () => {
         setIsSubmitting(false);
         return;
       }
-
+  
       const method = id ? "PUT" : "POST";
       const url = id
         ? `http://localhost:5001/api/slides/${id}`
         : "http://localhost:5001/api/slides";
-
+  
       const response = await fetch(url, { method, body: formData });
       const data = await response.json();
-
+  
       if (response.ok) {
         setShowSuccessMessage(true);
-        setTimeout(() => {
-          navigate("/edit");
-        }, 3000);
+        // Reset form fields if needed
+        setTitle("");
+        setSubtitle("");
+        setBackgroundImage(null);
+        setBackgroundImageURL("");
+        // Optionally, you can add a delay before hiding the success message
+        setTimeout(() => setShowSuccessMessage(false), 3000);
       } else {
         setError(data.error || "Failed to add/update slide");
       }
@@ -81,7 +85,7 @@ export const SlideForm = () => {
       setIsSubmitting(false);
     }
   };
-
+  
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
