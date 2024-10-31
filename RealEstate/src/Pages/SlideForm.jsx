@@ -16,7 +16,6 @@ export const SlideForm = () => {
 
   useEffect(() => {
     if (id) {
-      // Fetch the slide data for editing
       const fetchSlide = async () => {
         try {
           const response = await fetch(`http://localhost:5001/api/slides/${id}`);
@@ -42,12 +41,12 @@ export const SlideForm = () => {
     setError("");
     setShowSuccessMessage(false);
     setIsSubmitting(true);
-  
+
     try {
       const formData = new FormData();
       formData.append("title", title);
       formData.append("subtitle", subtitle);
-  
+
       if (backgroundImageType === "upload" && backgroundImage) {
         formData.append("backgroundImage", backgroundImage);
       } else if (backgroundImageType === "url" && backgroundImageURL) {
@@ -57,23 +56,21 @@ export const SlideForm = () => {
         setIsSubmitting(false);
         return;
       }
-  
+
       const method = id ? "PUT" : "POST";
       const url = id
         ? `http://localhost:5001/api/slides/${id}`
         : "http://localhost:5001/api/slides";
-  
+
       const response = await fetch(url, { method, body: formData });
       const data = await response.json();
-  
+
       if (response.ok) {
         setShowSuccessMessage(true);
-        // Reset form fields if needed
         setTitle("");
         setSubtitle("");
         setBackgroundImage(null);
         setBackgroundImageURL("");
-        // Optionally, you can add a delay before hiding the success message
         setTimeout(() => setShowSuccessMessage(false), 3000);
       } else {
         setError(data.error || "Failed to add/update slide");
@@ -85,7 +82,7 @@ export const SlideForm = () => {
       setIsSubmitting(false);
     }
   };
-  
+
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -109,7 +106,6 @@ export const SlideForm = () => {
 
   return (
     <section className="relative">
-      {/* Success Message Toast */}
       <AnimatePresence>
         {showSuccessMessage && (
           <motion.div
@@ -138,18 +134,20 @@ export const SlideForm = () => {
         )}
       </AnimatePresence>
 
-      <div className="max-w-lg mx-auto p-6 bg-white shadow-md rounded-lg mt-10">
-        <h2 className="text-2xl font-bold mb-6 text-center">{id ? "Edit Slide" : "Add New Slide"}</h2>
+      <div className="max-w-lg mx-auto p-8 bg-white shadow-lg rounded-lg mt-10 border border-gray-200">
+        <h2 className="text-3xl font-extrabold text-center text-gray-800 mb-8">
+          {id ? "Edit Slide" : "Add New Slide"}
+        </h2>
         
         {error && (
-          <div className="mb-4 p-3 bg-red-100 text-red-700 rounded">
+          <div className="mb-4 p-3 bg-red-50 border-l-4 border-red-400 text-red-700 rounded">
             {error}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label className="block text-gray-700 font-bold mb-2" htmlFor="title">
+            <label className="block text-gray-700 font-semibold mb-2" htmlFor="title">
               Title
             </label>
             <input
@@ -158,12 +156,12 @@ export const SlideForm = () => {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               required
-              className="w-full p-2 border border-gray-300 rounded"
+              className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
           <div>
-            <label className="block text-gray-700 font-bold mb-2" htmlFor="subtitle">
+            <label className="block text-gray-700 font-semibold mb-2" htmlFor="subtitle">
               Subtitle
             </label>
             <input
@@ -172,14 +170,14 @@ export const SlideForm = () => {
               value={subtitle}
               onChange={(e) => setSubtitle(e.target.value)}
               required
-              className="w-full p-2 border border-gray-300 rounded"
+              className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
-          <div className="mb-4">
-            <label className="block text-gray-700 font-bold mb-2">Background Image Source</label>
+          <div>
+            <label className="block text-gray-700 font-semibold mb-2">Background Image Source</label>
             <div className="flex items-center space-x-4">
-              <label className="flex items-center">
+              <label className="flex items-center text-gray-600 font-medium">
                 <input
                   type="radio"
                   value="url"
@@ -189,7 +187,7 @@ export const SlideForm = () => {
                 />
                 Image URL
               </label>
-              <label className="flex items-center">
+              <label className="flex items-center text-gray-600 font-medium">
                 <input
                   type="radio"
                   value="upload"
@@ -204,7 +202,7 @@ export const SlideForm = () => {
 
           {backgroundImageType === "url" ? (
             <div>
-              <label className="block text-gray-700 font-bold mb-2" htmlFor="backgroundImageURL">
+              <label className="block text-gray-700 font-semibold mb-2" htmlFor="backgroundImageURL">
                 Background Image URL
               </label>
               <input
@@ -213,13 +211,13 @@ export const SlideForm = () => {
                 value={backgroundImageURL}
                 onChange={(e) => setBackgroundImageURL(e.target.value)}
                 required={backgroundImageType === "url"}
-                className="w-full p-2 border border-gray-300 rounded"
+                className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="https://example.com/image.jpg"
               />
             </div>
           ) : (
             <div>
-              <label className="block text-gray-700 font-bold mb-2" htmlFor="backgroundImage">
+              <label className="block text-gray-700 font-semibold mb-2" htmlFor="backgroundImage">
                 Upload Background Image
               </label>
               <input
@@ -228,7 +226,7 @@ export const SlideForm = () => {
                 onChange={handleFileChange}
                 required={backgroundImageType === "upload"}
                 accept="image/jpeg,image/png,image/gif,image/webp"
-                className="w-full p-2 border border-gray-300 rounded"
+                className="w-full p-3 border border-gray-300 rounded focus:outline-none"
               />
               <p className="text-sm text-gray-500 mt-1">
                 Max file size: 5MB. Allowed formats: JPEG, PNG, GIF, WEBP
@@ -239,10 +237,10 @@ export const SlideForm = () => {
           <button
             type="submit"
             disabled={isSubmitting}
-            className={`w-full font-bold py-2 px-4 rounded transition duration-300 ${
+            className={`w-full font-semibold py-3 rounded text-white transition duration-300 ${
               isSubmitting
                 ? "bg-gray-400 cursor-not-allowed"
-                : "bg-blue-500 hover:bg-blue-600 text-white"
+                : "bg-blue-500 hover:bg-blue-600"
             }`}
           >
             {isSubmitting ? (id ? "Updating Slide..." : "Adding Slide...") : (id ? "Update Slide" : "Add Slide")}
