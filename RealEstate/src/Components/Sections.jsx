@@ -306,6 +306,7 @@ export const Overview = () => (
           const response = await fetch("http://localhost:5001/api/projects");
           if (response.ok) {
             const data = await response.json();
+            console.log(data)
             setProjects(data); // Set the fetched projects
           } else {
             console.error("Failed to fetch projects:", response.statusText);
@@ -319,6 +320,13 @@ export const Overview = () => (
   
       fetchProjects();
     }, []);
+
+    const getImageUrl = (imageUrl) => {
+      if (!imageUrl) return '';
+      return imageUrl.startsWith('http') 
+        ? imageUrl 
+        : `http://localhost:5001${imageUrl}`;
+    };
   
     const filteredProjects =
       categoryFilter === "All"
@@ -362,7 +370,7 @@ export const Overview = () => (
                   <Link to={`/project/${project.id}`}>
                     <div className="relative overflow-hidden">
                       <img
-                        src={project.image}
+                        src={getImageUrl(project.image)}
                         alt={project.title}
                         className="w-full h-40 object-cover rounded-t-lg transition-transform duration-500 group-hover:scale-110"
                       />

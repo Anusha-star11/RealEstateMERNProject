@@ -70,25 +70,28 @@ const EditProjectForm = () => {
   const saveProject = async (id) => {
     const projectData = formData[id];
     const updatedData = new FormData();
-  
+
     try {
+      // Append image based on selected option
       if (selectedOption[id] === 'upload' && selectedFile[id]) {
-        updatedData.append('image', selectedFile[id]); // Ensure this matches 'image' in multer
+        updatedData.append('image', selectedFile[id]); // This must match multer's field name
       } else {
-        updatedData.append('image', projectData.imageURL); // Use provided URL if no file is uploaded
+        updatedData.append('image', projectData.imageURL); // Use URL if no file
       }
-  
+
       // Append other project data
       updatedData.append('title', projectData.title);
       updatedData.append('description', projectData.description);
-      updatedData.append('category', projectData.category);
-  
+      if (projectData.category) {
+        updatedData.append('category', projectData.category);
+      }
+
       await axios.put(`http://localhost:5001/api/projects/${id}`, updatedData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
-  
+
       setSuccessMessage('Project updated successfully!');
       setTimeout(() => setSuccessMessage(''), 3000); // Clear the message after 3 seconds
       fetchProjects(); // Refresh projects list after saving
@@ -96,14 +99,13 @@ const EditProjectForm = () => {
       console.error('Error saving project:', error);
     }
   };
-  
 
   const deleteProject = async (id) => {
     try {
       await axios.delete(`http://localhost:5001/api/projects/${id}`);
       setProjects(projects.filter((project) => project._id !== id));
       setSuccessMessage('Project deleted successfully!');
-      setTimeout(() => setSuccessMessage(''), 3000); // Clear the message after 3 seconds
+      setTimeout(() => setSuccessMessage(''), 3000);
     } catch (error) {
       console.error('Error deleting project:', error);
     }
