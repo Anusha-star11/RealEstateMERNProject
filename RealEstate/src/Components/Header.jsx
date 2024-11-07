@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import logo from '../assets/logo.png'
+import logo1 from '../assets/logo1.jpg'
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -44,7 +44,7 @@ const Header = () => {
 
   return (
     <header
-    className={`fixed top-0 left-0 right-0 z-50 transition-colors duration-300 w-full bg-[#365359]
+    className={`fixed top-0 left-0 right-0 z-50 transition-colors duration-300 w-full bg-[#f85a3f]
     `}
   >
     <nav className="container mx-auto px-4 flex items-center justify-between h-14 md:h-16 lg:h-18">
@@ -55,7 +55,7 @@ const Header = () => {
         style={{ maxWidth: 'calc(100% - 60px)' }}
       >
         <img 
-          src={logo} 
+          src={logo1} 
           alt="V9 Properties Logo" 
           className="h-auto w-auto max-h-full"
           style={{ maxWidth: '100%', objectFit: 'contain' }}
@@ -64,16 +64,16 @@ const Header = () => {
 
       {/* Right side - Navigation Menu */}
       <div className="flex-shrink-0 flex justify-end items-center h-full">
-        <div className="hidden md:flex space-x-3 lg:space-x-6 text-[#f2d39a]">
+        <div className="hidden md:flex space-x-3 lg:space-x-6 text-white">
             <button
               onClick={() => navigateToSection("home")}
-              className="hover:text-white text-sm lg:text-base whitespace-nowrap transition-colors duration-300"
+              className="hover:text-[#464ba6] text-sm lg:text-base whitespace-nowrap transition-colors duration-300"
             >
               Home
             </button>
             <button
               onClick={() => navigateToSection("projects")}
-              className="hover:text-white text-sm lg:text-base whitespace-nowrap transition-colors duration-300"
+              className="hover:text-[#464ba6] text-sm lg:text-base whitespace-nowrap transition-colors duration-300"
             >
               Projects
             </button>

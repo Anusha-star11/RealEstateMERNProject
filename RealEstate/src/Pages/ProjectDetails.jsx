@@ -1,4 +1,4 @@
-import React, { useEffect }from 'react';
+import React, { useEffect,useState }from 'react';
 import { useParams } from 'react-router-dom';
 import Carousel from 'react-multi-carousel';
 import { motion } from "framer-motion";
@@ -8,63 +8,42 @@ import { faDumbbell, faRunning, faSwimmer, faCar, faDice, faShieldAlt, faChild, 
 import 'react-multi-carousel/lib/styles.css';
 
 export const ProjectDetails = () => {
+  const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
   const { id } = useParams();
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  const projects = [
-    {
-      id: 1,
-      title: 'Project 1',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      image: 'https://storage.googleapis.com/a1aa/image/arpm9V3KVyZZNhGujkQ6M5wfSHJ5Enpv9MNRQclcuceVm7mTA.jpg',
-      category: 'Apartments',
-    },
-    {
-      id: 2,
-      title: 'Project 2',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      image: 'https://storage.googleapis.com/a1aa/image/npBMWYBfpQXXGSV93VVOlqPKHhefVhfeQW86jn9Hr8FAYc3cC.jpg',
-      category: 'Villas',
-    },
-    {
-      id: 3,
-      title: 'Project 3',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      image: 'https://storage.googleapis.com/a1aa/image/mSRcUla98B44DN3jJ7Ej0e6uYkLv1IjrwFFQJhFIfN4co7mTA.jpg',
-      category: 'Community',
-    },
-    {
-      id: 4,
-      title: 'Project 4',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      image: 'https://storage.googleapis.com/a1aa/image/kpffWOTdkXpLpUgCBkhaHmfjxuTbqZ0JKK1e8v5FeKHb7c3cC.jpg',
-      category: 'Apartments',
-    },
-    {
-      id: 5,
-      title: 'Project 5',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      image: 'https://storage.googleapis.com/a1aa/image/Uxh9jzjl8uYxHxAMO91trj84nERoIe88dnGMBKI8ZIl7wdzJA.jpg',
-      category: 'Villas',
-    },
-    {
-      id: 6,
-      title: 'Project 6',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      image: 'https://storage.googleapis.com/a1aa/image/oLKo17S29b7zMtWw53BJhIdMfP3nbTNA3W0vxefp0KYCQ3NnA.jpg',
-      category: 'Community',
-    },
-    // ... other projects
-  ];
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const response = await fetch(`http://localhost:5001/api/projects/${id}`);
+        if (response.ok) {
+          const data = await response.json();
+         
+          setProjects(data); // Set the fetched projects
+        } else {
+          console.error("Failed to fetch projects:", response.statusText);
+        }
+      } catch (error) {
+        console.error("Error fetching projects:", error);
+      } finally {
+        setLoading(false); // Stop loading after fetching
+      }
+    };
 
-  const project = projects.find(proj => proj.id === parseInt(id));
+    fetchProjects();
+  }, [id]);
 
-  if (!project) {
-    return <div>Project not found</div>;
-  }
+  const getImageUrl = (imageUrl) => {
+    if (!imageUrl) return '';
+    return imageUrl.startsWith('http') 
+      ? imageUrl 
+      : `http://localhost:5001${imageUrl}`;
+  };
+
 
   const responsive = {
     desktop: {
@@ -87,7 +66,7 @@ export const ProjectDetails = () => {
       <section className="h-screen w-full snap-start">
         <Carousel responsive={responsive} className="h-full">
           <div className="h-full">
-            <img src={project.image} alt={`Project ${project.title}`} className="w-full h-full object-cover" />
+            <img src={getImageUrl(projects.image)} alt={`Project ${projects.title}`} className="w-full h-full object-cover" />
           </div>
           {/* Add more carousel items as needed */}
         </Carousel>

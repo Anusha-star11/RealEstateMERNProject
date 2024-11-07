@@ -306,7 +306,7 @@ export const Overview = () => (
           const response = await fetch("http://localhost:5001/api/projects");
           if (response.ok) {
             const data = await response.json();
-            console.log(data)
+           
             setProjects(data); // Set the fetched projects
           } else {
             console.error("Failed to fetch projects:", response.statusText);

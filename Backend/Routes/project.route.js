@@ -74,6 +74,7 @@ router.get('/projects', async (req, res) => {
 router.get('/projects/:id', async (req, res) => {
   try {
     const project = await Project.findById(req.params.id);
+
     if (project) {
       res.json(project);
     } else {
