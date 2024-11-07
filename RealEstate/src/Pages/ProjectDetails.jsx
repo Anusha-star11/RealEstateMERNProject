@@ -1,4 +1,4 @@
-import React, { useEffect,useState }from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Carousel from 'react-multi-carousel';
 import { motion } from "framer-motion";
@@ -8,67 +8,115 @@ import { faDumbbell, faRunning, faSwimmer, faCar, faDice, faShieldAlt, faChild, 
 import 'react-multi-carousel/lib/styles.css';
 
 export const ProjectDetails = () => {
-  const [projects, setProjects] = useState([]);
+  const [project, setProject] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const { id } = useParams();
 
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
-
-  useEffect(() => {
-    const fetchProjects = async () => {
+    const fetchProject = async () => {
       try {
+        setLoading(true);
+        setError(null);
+
+        console.log('Fetching project with ID:', id);
         const response = await fetch(`http://localhost:5001/api/projects/${id}`);
-        if (response.ok) {
-          const data = await response.json();
-         
-          setProjects(data); // Set the fetched projects
-        } else {
-          console.error("Failed to fetch projects:", response.statusText);
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch project');
         }
+
+        const data = await response.json();
+        console.log('Fetched project data:', data);
+        
+        if (!data) {
+          throw new Error('No project found');
+        }
+
+        setProject(data);
       } catch (error) {
-        console.error("Error fetching projects:", error);
+        console.error('Error fetching project:', error);
+        setError(error.message || 'An unexpected error occurred');
       } finally {
-        setLoading(false); // Stop loading after fetching
+        setLoading(false);
       }
     };
 
-    fetchProjects();
+    if (id) {
+      fetchProject();
+    }
   }, [id]);
 
   const getImageUrl = (imageUrl) => {
-    if (!imageUrl) return '';
+    if (!imageUrl) return '/placeholder-image.jpg';
     return imageUrl.startsWith('http') 
       ? imageUrl 
       : `http://localhost:5001${imageUrl}`;
   };
 
-
   const responsive = {
-    desktop: {
-      breakpoint: { max: 3000, min: 1024 },
-      items: 1
-    },
-    tablet: {
-      breakpoint: { max: 1024, min: 464 },
-      items: 1
-    },
-    mobile: {
-      breakpoint: { max: 464, min: 0 },
-      items: 1
-    }
+    desktop: { breakpoint: { max: 3000, min: 1024 }, items: 1 },
+    tablet: { breakpoint: { max: 1024, min: 464 }, items: 1 },
+    mobile: { breakpoint: { max: 464, min: 0 }, items: 1 }
   };
+
+  if (loading) {
+    return (
+      <div className="h-screen flex justify-center items-center">
+        <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-gray-900"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex justify-center items-center p-4">
+        <div className="bg-red-50 border border-red-200 rounded-lg p-6 max-w-md">
+          <h2 className="text-red-700 text-xl font-semibold mb-2">Error Loading Project</h2>
+          <p className="text-red-600">{error}</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!project) {
+    return (
+      <div className="min-h-screen flex justify-center items-center p-4">
+        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 max-w-md">
+          <h2 className="text-yellow-700 text-xl font-semibold mb-2">Project Not Found</h2>
+          <p className="text-yellow-600">The requested project could not be found.</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="snap-y snap-mandatory h-screen overflow-y-scroll">
       {/* Carousel Section */}
       <section className="h-screen w-full snap-start">
-        <Carousel responsive={responsive} className="h-full">
-          <div className="h-full">
-            <img src={getImageUrl(projects.image)} alt={`Project ${projects.title}`} className="w-full h-full object-cover" />
+        <Carousel 
+          responsive={responsive} 
+          className="h-full"
+          infinite={true}
+          showDots={true}
+          autoPlay={true}
+          autoPlaySpeed={5000}
+        >
+          <div className="h-full relative">
+            <img 
+              src={getImageUrl(project.image)}
+              alt={project.title}
+              className="w-full h-full object-cover"
+              onError={(e) => {
+                console.error('Image failed to load:', project.image);
+                e.target.src = '/placeholder-image.jpg';
+              }}
+            />
+            <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white p-4">
+              <h2 className="text-2xl font-bold">{project.title}</h2>
+              <p>{project.description}</p>
+            </div>
           </div>
-          {/* Add more carousel items as needed */}
         </Carousel>
       </section>
 
@@ -82,7 +130,7 @@ export const ProjectDetails = () => {
           viewport={{ once: true }}
         >
           <img
-            src="https://plus.unsplash.com/premium_photo-1661963546658-3bb26361ca54?q=80&w=1562&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+            src={getImageUrl(project.image)}
             alt="Highlight Image"
             className="rounded-lg w-full max-w-md md:max-w-lg h-auto object-cover"
           />
@@ -97,28 +145,24 @@ export const ProjectDetails = () => {
         >
           <h2 className="text-3xl sm:text-4xl font-bold mb-4">Highlights</h2>
           <ul className="custom-list text-base sm:text-lg">
-        <motion.li className="mb-4 flex items-center" whileHover={{ scale: 1.05 }}>
-          <FontAwesomeIcon icon={faArrowCircleRight} className="mr-4 text-gray-600" />
-          Spacious living areas designed for comfort and style.
-        </motion.li>
-        <motion.li className="mb-4 flex items-center" whileHover={{ scale: 1.05 }}>
-          <FontAwesomeIcon icon={faArrowCircleRight} className="mr-4 text-gray-600" />
-          Top-tier appliances and premium quality materials throughout.
-        </motion.li>
-        <motion.li className="mb-4 flex items-center" whileHover={{ scale: 1.05 }}>
-          <FontAwesomeIcon icon={faArrowCircleRight} className="mr-4 text-gray-600" />
-          Elegant interiors with contemporary design aesthetics.
-        </motion.li>
-        <motion.li className="mb-4 flex items-center" whileHover={{ scale: 1.05 }}>
-          <FontAwesomeIcon icon={faArrowCircleRight} className="mr-4 text-gray-600" />
-          Exclusive access to world-class amenities and green spaces.
-        </motion.li>
-      </ul>
-    </motion.div>
+            <motion.li className="mb-4 flex items-center" whileHover={{ scale: 1.05 }}>
+              <FontAwesomeIcon icon={faArrowCircleRight} className="mr-4 text-gray-600" />
+              {project.title}
+            </motion.li>
+            <motion.li className="mb-4 flex items-center" whileHover={{ scale: 1.05 }}>
+              <FontAwesomeIcon icon={faArrowCircleRight} className="mr-4 text-gray-600" />
+              {project.description}
+            </motion.li>
+            <motion.li className="mb-4 flex items-center" whileHover={{ scale: 1.05 }}>
+              <FontAwesomeIcon icon={faArrowCircleRight} className="mr-4 text-gray-600" />
+              {project.category}
+            </motion.li>
+          </ul>
+        </motion.div>
+      </section>
 
-  </section>
-
-  <section className="h-screen w-full snap-start bg-white p-4 sm:p-6 flex flex-col justify-center">
+      {/* Amenities Section */}
+      <section className="h-screen w-full snap-start bg-white p-4 sm:p-6 flex flex-col justify-center">
         <motion.div
           className="text-center mb-8"
           initial={{ opacity: 0, y: -50 }}

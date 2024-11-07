@@ -73,15 +73,21 @@ router.get('/projects', async (req, res) => {
 
 router.get('/projects/:id', async (req, res) => {
   try {
-    const project = await Project.findById(req.params.id);
+    const { id } = req.params;
+    console.log('Looking up project with id:', id);
 
-    if (project) {
-      res.json(project);
-    } else {
-      res.status(404).json({ message: 'Project not found' });
+    const project = await Project.findOne({ id: id });
+    
+    if (!project) {
+      console.log('No project found with id:', id);
+      return res.status(404).json({ message: 'Project not found' });
     }
+
+    console.log('Found project:', project);
+    res.json(project);
   } catch (error) {
-    res.status(500).json({ message: 'Server error' });
+    console.error('Error fetching project:', error);
+    res.status(500).json({ message: 'Error fetching project', error: error.message });
   }
 });
 
