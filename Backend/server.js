@@ -22,7 +22,7 @@ if (!fs.existsSync(uploadsDir)){
 
 // MongoDB Connection
 mongoose
-  .connect(process.env.MONGO, { useNewUrlParser: true, useUnifiedTopology: true })
+  .connect(process.env.MONGO)
   .then(() => {
     console.log("MongoDB is connected");
   })
