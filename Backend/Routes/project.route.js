@@ -1,7 +1,7 @@
 import express from 'express';
 import multer from 'multer';
 import path from 'path';
-import Project from '../models/projects.model.js'; // Adjust the path if needed
+import Project from '../Models/projects.model.js'; // Adjust the path if needed
 
 const router = express.Router();
 

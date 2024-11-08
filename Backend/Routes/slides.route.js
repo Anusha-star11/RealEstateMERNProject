@@ -1,7 +1,7 @@
 import express from 'express';
 import multer from 'multer';
 import path from 'path';
-import Slide from '../models/slides.model.js';
+import Slide from '../Models/slides.model.js';
 
 const router = express.Router();
 
