@@ -57,7 +57,7 @@ const Header = () => {
         <img 
           src={logo1} 
           alt="V9 Properties Logo" 
-          className="h-auto w-auto max-h-full"
+          className="h-auto w-auto max-h-full "
           style={{ maxWidth: '100%', objectFit: 'contain' }}
         />
       </Link>
