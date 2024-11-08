@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import baseURL from '../url';
 
 const EditSlidesForm = () => {
   const [slides, setSlides] = useState([]);
@@ -14,7 +15,7 @@ const EditSlidesForm = () => {
 
   const fetchSlides = async () => {
     try {
-      const response = await axios.get('http://localhost:5001/api/slides');
+      const response = await axios.get(`${baseURL}/api/slides`);
       setSlides(response.data);
 
       const initialFormData = {};
@@ -73,13 +74,13 @@ const EditSlidesForm = () => {
         const uploadData = new FormData();
         uploadData.append('backgroundImage', selectedFile[id]);
 
-        const uploadResponse = await axios.post('http://localhost:5001/api/upload', uploadData, {
+        const uploadResponse = await axios.post(`${baseURL}/api/upload`, uploadData, {
           headers: { 'Content-Type': 'multipart/form-data' },
         });
         slideData.backgroundImage = uploadResponse.data.imageUrl;
       }
 
-      await axios.put(`http://localhost:5001/api/slides/${id}`, {
+      await axios.put(`${baseURL}/api/slides/${id}`, {
         title: slideData.title,
         subtitle: slideData.subtitle,
         backgroundImage: selectedOption[id] === 'upload' ? slideData.backgroundImage : slideData.backgroundImageURL
@@ -102,7 +103,7 @@ const EditSlidesForm = () => {
 
   const deleteSlide = async (id) => {
     try {
-      await axios.delete(`http://localhost:5001/api/slides/${id}`);
+      await axios.delete(`${baseURL}/api/slides/${id}`);
       setSlides(slides.filter((slide) => slide._id !== id));
     } catch (error) {
       console.error('Error deleting slide:', error);

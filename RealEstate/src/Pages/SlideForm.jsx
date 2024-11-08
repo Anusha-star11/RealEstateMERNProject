@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams} from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
+import baseURL from "../url";
 
 export const SlideForm = () => {
   const { id } = useParams();
-  const navigate = useNavigate();
   const [title, setTitle] = useState("");
   const [subtitle, setSubtitle] = useState("");
   const [backgroundImageType, setBackgroundImageType] = useState("url");
@@ -18,7 +18,7 @@ export const SlideForm = () => {
     if (id) {
       const fetchSlide = async () => {
         try {
-          const response = await fetch(`http://localhost:5001/api/slides/${id}`);
+          const response = await fetch(`${baseURL}/api/slides/${id}`);
           if (response.ok) {
             const data = await response.json();
             setTitle(data.title);
@@ -59,8 +59,8 @@ export const SlideForm = () => {
 
       const method = id ? "PUT" : "POST";
       const url = id
-        ? `http://localhost:5001/api/slides/${id}`
-        : "http://localhost:5001/api/slides";
+        ? `${baseURL}/api/slides/${id}`
+        : `${baseURL}/api/slides`;
 
       const response = await fetch(url, { method, body: formData });
       const data = await response.json();

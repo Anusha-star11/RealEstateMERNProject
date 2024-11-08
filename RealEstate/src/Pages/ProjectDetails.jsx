@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowCircleRight } from '@fortawesome/free-solid-svg-icons';
 import { faDumbbell, faRunning, faSwimmer, faCar, faDice, faShieldAlt, faChild, faTableTennis } from '@fortawesome/free-solid-svg-icons'; 
 import 'react-multi-carousel/lib/styles.css';
+import baseURL from '../url';
 
 export const ProjectDetails = () => {
   const [project, setProject] = useState(null);
@@ -20,7 +21,7 @@ export const ProjectDetails = () => {
         setError(null);
 
         console.log('Fetching project with ID:', id);
-        const response = await fetch(`http://localhost:5001/api/projects/${id}`);
+        const response = await fetch(`${baseURL}/api/projects/${id}`);
         
         if (!response.ok) {
           throw new Error('Failed to fetch project');
@@ -51,7 +52,7 @@ export const ProjectDetails = () => {
     if (!imageUrl) return '/placeholder-image.jpg';
     return imageUrl.startsWith('http') 
       ? imageUrl 
-      : `http://localhost:5001${imageUrl}`;
+      : `${baseURL}${imageUrl}`;
   };
 
   const responsive = {

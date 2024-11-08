@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import baseURL from '../url';
 
 const EditProjectForm = () => {
   const [projects, setProjects] = useState([]);
@@ -14,7 +15,7 @@ const EditProjectForm = () => {
 
   const fetchProjects = async () => {
     try {
-      const response = await axios.get('http://localhost:5001/api/projects');
+      const response = await axios.get(`${baseURL}/api/projects`);
       setProjects(response.data);
 
       const initialFormData = {};
@@ -86,7 +87,7 @@ const EditProjectForm = () => {
         updatedData.append('category', projectData.category);
       }
 
-      await axios.put(`http://localhost:5001/api/projects/${id}`, updatedData, {
+      await axios.put(`${baseURL}/api/projects/${id}`, updatedData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -102,7 +103,7 @@ const EditProjectForm = () => {
 
   const deleteProject = async (id) => {
     try {
-      await axios.delete(`http://localhost:5001/api/projects/${id}`);
+      await axios.delete(`${baseURL}/api/projects/${id}`);
       setProjects(projects.filter((project) => project._id !== id));
       setSuccessMessage('Project deleted successfully!');
       setTimeout(() => setSuccessMessage(''), 3000);

@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowCircleRight } from '@fortawesome/free-solid-svg-icons';
 import { faWhatsapp } from '@fortawesome/free-brands-svg-icons';
-// import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import { faDumbbell, faRunning, faSwimmer, faCar, faDice, faShieldAlt, faChild, faTableTennis } from '@fortawesome/free-solid-svg-icons'; 
 import { faBriefcase, faProjectDiagram, faUsers, faAward, faSmile, faGlobe } from '@fortawesome/free-solid-svg-icons';
 import CountUp from 'react-countup';
 import { motion } from "framer-motion";
 import { Link, useNavigate } from 'react-router-dom';
 import { Phone } from 'lucide-react'; // Import the Phone icon
+import baseURL from "../url.js";
 
 
   // const slides = [
@@ -39,7 +38,7 @@ import { Phone } from 'lucide-react'; // Import the Phone icon
       const fetchSlides = async () => {
         setIsLoading(true);
         try {
-          const response = await fetch("http://localhost:5001/api/slides");
+          const response = await fetch(`${baseURL}/api/slides`);
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
           }
@@ -73,7 +72,7 @@ import { Phone } from 'lucide-react'; // Import the Phone icon
       if (!imageUrl) return '';
       return imageUrl.startsWith('http') 
         ? imageUrl 
-        : `http://localhost:5001${imageUrl}`;
+        : `${baseURL}${imageUrl}`;
     };
   
     // Loading state
@@ -133,14 +132,13 @@ import { Phone } from 'lucide-react'; // Import the Phone icon
               <p className="text-lg sm:text-xl md:text-2xl mb-4 sm:mb-6 md:mb-8 text-center">
                 {slide.subtitle}
               </p>
-              <a
-                href="tel:+919912344477"
-                className="bg-[#f2d39a] text-[#365359] font-bold py-2 px-4 rounded text-sm sm:text-base 
-                         transition duration-300 ease-in-out transform hover:scale-105 hover:bg-[#e6c38c] 
-                         flex items-center"
-              >
-                Book a Visit
-              </a>
+              <a 
+              href="tel:+919912344477" 
+              className="bg-[#f2d39a] text-[#365359] font-bold py-2 px-4 rounded text-sm sm:text-base transition duration-300 ease-in-out transform hover:scale-105 hover:bg-[#e6c38c] flex items-center"
+            >
+              <Phone size={20} className="mr-2" />
+              Book a Visit
+            </a>
             </div>
           </div>
         ))}
@@ -303,7 +301,7 @@ export const Overview = () => (
     useEffect(() => {
       const fetchProjects = async () => {
         try {
-          const response = await fetch("http://localhost:5001/api/projects");
+          const response = await fetch(`${baseURL}/api/projects`);
           if (response.ok) {
             const data = await response.json();
            
@@ -325,7 +323,7 @@ export const Overview = () => (
       if (!imageUrl) return '';
       return imageUrl.startsWith('http') 
         ? imageUrl 
-        : `http://localhost:5001${imageUrl}`;
+        : `${baseURL}${imageUrl}`;
     };
   
     const filteredProjects =

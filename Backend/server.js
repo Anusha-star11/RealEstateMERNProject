@@ -68,7 +68,7 @@ app.post('/api/upload', upload.single('backgroundImage'), (req, res) => {
     if (!req.file) {
       return res.status(400).json({ message: 'No file uploaded' });
     }
-    const imageUrl = `http://localhost:5001/uploads/${req.file.filename}`;
+    const imageUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
     res.status(200).json({ imageUrl });
   } catch (error) {
     console.error('Error uploading file:', error);

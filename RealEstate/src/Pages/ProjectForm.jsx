@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from 'axios';
+import baseURL from "../url";
 
 export const ProjectForm = () => {
   const [title, setTitle] = useState("");
@@ -22,7 +23,7 @@ export const ProjectForm = () => {
         uploadFormData.append("backgroundImage", imageFile);
         
         // First, upload the image
-        const uploadResponse = await axios.post("http://localhost:5001/api/upload", uploadFormData, {
+        const uploadResponse = await axios.post(`${baseURL}/api/upload`, uploadFormData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
@@ -41,7 +42,7 @@ export const ProjectForm = () => {
         image: finalImageUrl,
       };
 
-      const response = await axios.post("http://localhost:5001/api/projects", projectData);
+      const response = await axios.post(`${baseURL}/api/projects`, projectData);
 
       setMessage("Project added successfully!");
       // Clear form
