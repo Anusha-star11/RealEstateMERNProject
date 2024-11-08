@@ -30,9 +30,10 @@ mongoose
     console.error("MongoDB connection error:", error);
   });
 
-const allowedOrigins = [
-  'http://localhost:5173' // For local frontend during development
-];
+  const allowedOrigins = [
+    'http://localhost:5173',
+    'https://v9-properties.onrender.com' // Add your production URL
+  ];
 
 const app = express();
 
@@ -41,10 +42,14 @@ const app = express();
 
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors({ origin: allowedOrigins, credentials: true }));
+app.use(cors({ 
+  origin: allowedOrigins, 
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+}));
 
 // Serve static files
-app.use(express.static(path.join(__dirname, 'realestate', 'dist')));
+app.use(express.static(path.join(__dirname, 'dist')));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); // Serve uploads folder as static
 
 // Set up multer for file uploads
@@ -64,6 +69,10 @@ const upload = multer({
   }
 });
 
+// API Routes
+app.use("/api", slideRoutes); 
+app.use("/api", projectRoutes);
+
 // Upload route
 app.post('/api/upload', upload.single('backgroundImage'), (req, res) => {
   try {
@@ -78,9 +87,7 @@ app.post('/api/upload', upload.single('backgroundImage'), (req, res) => {
   }
 });
 
-// API Routes
-app.use("/api", slideRoutes); 
-app.use("/api", projectRoutes);
+
 
 // Error handling middleware for multer and other errors
 app.use((err, req, res, next) => {
