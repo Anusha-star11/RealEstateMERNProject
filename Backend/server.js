@@ -67,7 +67,7 @@ app.use((req, res, next) => {
 });
 
 // Static file serving with correct MIME types
-app.use(express.static(path.join(__dirname, 'dist'), {
+app.use(express.static(path.join(__dirname, '../RealEstate/dist'), {
   setHeaders: (res, path) => {
     if (path.endsWith('.woff2')) {
       res.setHeader('Content-Type', 'font/woff2');
@@ -117,7 +117,7 @@ app.post('/api/upload', upload.single('backgroundImage'), (req, res) => {
 
 // Catch-all route for client-side routing
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+  res.sendFile(path.join(__dirname,'../RealEstate/dist/index.html'));
 });
 
 // Error handling middleware
