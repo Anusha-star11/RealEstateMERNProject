@@ -1,22 +1,9 @@
 import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import react from '@vitejs/plugin-react-swc'
 
 export default defineConfig({
   plugins: [react()],
-  // Remove the base config since you're serving from root
   build: {
-    rollupOptions: {
-      output: {
-        entryFileNames: '[name].[hash].js',
-        chunkFileNames: '[name].[hash].js',
-        assetFileNames: '[name].[hash][extname]'
-      }
-    }
+    outDir: 'dist', // Ensure the build output goes to the dist folder
   },
-  server: {
-    port: 5173,
-    proxy: {
-      '/api': 'http://localhost:5001'
-    }
-  }
 })
