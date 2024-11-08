@@ -5,8 +5,8 @@ import path from 'path';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import multer from 'multer'; // Import multer for file handling
-import slideRoutes from './routes/slides.route.js'; 
-import projectRoutes from './routes/project.route.js';
+import slideRoutes from './Routes/slides.route.js'; 
+import projectRoutes from './Routes/project.route.js';
 import { fileURLToPath } from 'url';
 import fs from 'fs';
 
