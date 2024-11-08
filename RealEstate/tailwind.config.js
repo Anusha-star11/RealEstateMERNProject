@@ -5,17 +5,26 @@ export default {
     "./src/**/*.{js,jsx,ts,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        sans: [
+          'system-ui',
+          '-apple-system',
+          'BlinkMacSystemFont',
+          'Segoe UI',
+          'Roboto',
+          'Arial',
+          'sans-serif',
+        ],
+      },
+    },
   },
   plugins: [],
+  // Add this to ensure FontAwesome styles are included
+  safelist: [
+    'fa',
+    'fas',
+    'far',
+    'fab'
+  ]
 }
-
-module.exports = {
-  mode: 'jit',
-  purge: ['./src/**/*.{js,jsx,ts,tsx}', './public/index.html'],
-  theme: {
-    extend: {},
-  },
-  variants: {},
-  plugins: [],
-};
