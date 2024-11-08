@@ -30,16 +30,14 @@ mongoose
     console.error("MongoDB connection error:", error);
   });
 
-  const allowedOrigins = [
-    'http://localhost:5173',
-    'https://v9-properties.onrender.com' // Add your production URL
-  ];
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://v9-properties.onrender.com'
+];
 
 const app = express();
 
-// Middleware
-
-
+// Basic middleware
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({ 
@@ -48,29 +46,59 @@ app.use(cors({
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
 }));
 
-// Serve static files
-app.use(express.static(path.join(__dirname, 'dist')));
-app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); // Serve uploads folder as static
+// CSP middleware - MOVED TO TOP before static files and routes
+app.use((req, res, next) => {
+  res.removeHeader('Content-Security-Policy');
+  res.setHeader(
+    'Content-Security-Policy',
+    [
+      "default-src 'self'",
+      "font-src 'self' data: https: https://fonts.gstatic.com https://ka-f.fontawesome.com https://v9-properties.onrender.com",
+      "img-src 'self' data: blob: https:",
+      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://ka-f.fontawesome.com",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+      "connect-src 'self' https://v9-properties.onrender.com wss://v9-properties.onrender.com ws://localhost:*",
+      "manifest-src 'self'",
+      "base-uri 'self'",
+      "form-action 'self'"
+    ].join('; ')
+  );
+  next();
+});
 
-// Set up multer for file uploads
+// Static file serving with correct MIME types
+app.use(express.static(path.join(__dirname, 'dist'), {
+  setHeaders: (res, path) => {
+    if (path.endsWith('.woff2')) {
+      res.setHeader('Content-Type', 'font/woff2');
+    }
+    if (path.endsWith('.woff')) {
+      res.setHeader('Content-Type', 'font/woff');
+    }
+  }
+}));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// Multer configuration
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'uploads'); // Files will be saved in 'uploads' folder
+    cb(null, 'uploads');
   },
   filename: (req, file, cb) => {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
     cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
   }
 });
+
 const upload = multer({ 
   storage: storage,
   limits: {
-    fileSize: 15 * 1024 * 1024 // 5MB limit
+    fileSize: 15 * 1024 * 1024
   }
 });
 
 // API Routes
-app.use("/api", slideRoutes); 
+app.use("/api", slideRoutes);
 app.use("/api", projectRoutes);
 
 // Upload route
@@ -87,14 +115,17 @@ app.post('/api/upload', upload.single('backgroundImage'), (req, res) => {
   }
 });
 
+// Catch-all route for client-side routing
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+});
 
-
-// Error handling middleware for multer and other errors
+// Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
   if (err instanceof multer.MulterError) {
     if (err.code === 'LIMIT_FILE_SIZE') {
-      return res.status(400).json({ error: 'File size is too large. Max size is 5MB.' });
+      return res.status(400).json({ error: 'File size is too large. Max size is 15MB.' });
     }
     return res.status(400).json({ error: err.message });
   }
@@ -102,6 +133,7 @@ app.use((err, req, res, next) => {
 });
 
 // Start Server
-app.listen(5001, () => {
-  console.log("Server is running on port 5001!");
+const PORT = process.env.PORT || 5001;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}!`);
 });
