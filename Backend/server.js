@@ -40,48 +40,45 @@ const app = express();
 // Basic middleware
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors({ 
-  origin: allowedOrigins, 
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
-}));
+app.use(cors({ origin: allowedOrigins, credentials: true }));
 
 // CSP middleware - MOVED TO TOP before static files and routes
-app.use((req, res, next) => {
-  res.setHeader(
-    'Content-Security-Policy',
-    [
-      "default-src 'self'",
-      "font-src 'self' data: https: https://fonts.gstatic.com https://ka-f.fontawesome.com",
-      "img-src 'self' data: blob: https:",
-      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://ka-f.fontawesome.com",
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://ka-f.fontawesome.com",
-      "connect-src 'self' https://v9-properties.onrender.com wss://v9-properties.onrender.com ws://localhost:* https://ka-f.fontawesome.com",
-      "manifest-src 'self'",
-      "base-uri 'self'",
-      "form-action 'self'"
-    ].join('; ')
-  );
-  next();
-});
+// app.use((req, res, next) => {
+//   res.setHeader(
+//     'Content-Security-Policy',
+//     [
+//       "default-src 'self'",
+//       "font-src 'self' data: https: https://fonts.gstatic.com https://ka-f.fontawesome.com",
+//       "img-src 'self' data: blob: https:",
+//       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://ka-f.fontawesome.com",
+//       "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://ka-f.fontawesome.com",
+//       "connect-src 'self' https://v9-properties.onrender.com wss://v9-properties.onrender.com ws://localhost:* https://ka-f.fontawesome.com",
+//       "manifest-src 'self'",
+//       "base-uri 'self'",
+//       "form-action 'self'"
+//     ].join('; ')
+//   );
+//   next();
+// });
 
-// Static file serving with correct MIME types
-// Update your static file serving configuration
-app.use(express.static(path.join(__dirname, '../RealEstate/dist'), {
-  setHeaders: (res, filePath) => {
-    if (filePath.endsWith('.js')) {
-      res.setHeader('Content-Type', 'application/javascript');
-    } else if (filePath.endsWith('.css')) {
-      res.setHeader('Content-Type', 'text/css');
-    } else if (filePath.endsWith('.html')) {
-      res.setHeader('Content-Type', 'text/html');
-    } else if (filePath.endsWith('.woff2')) {
-      res.setHeader('Content-Type', 'font/woff2');
-    } else if (filePath.endsWith('.woff')) {
-      res.setHeader('Content-Type', 'font/woff');
-    }
-  }
-}));
+// // Static file serving with correct MIME types
+// // Update your static file serving configuration
+// app.use(express.static(path.join(__dirname, '../RealEstate/dist'), {
+//   setHeaders: (res, filePath) => {
+//     if (filePath.endsWith('.js')) {
+//       res.setHeader('Content-Type', 'application/javascript');
+//     } else if (filePath.endsWith('.css')) {
+//       res.setHeader('Content-Type', 'text/css');
+//     } else if (filePath.endsWith('.html')) {
+//       res.setHeader('Content-Type', 'text/html');
+//     } else if (filePath.endsWith('.woff2')) {
+//       res.setHeader('Content-Type', 'font/woff2');
+//     } else if (filePath.endsWith('.woff')) {
+//       res.setHeader('Content-Type', 'font/woff');
+//     }
+//   }
+// }));
+app.use(express.static(path.join(__dirname, 'Realestate', 'dist')));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Multer configuration
