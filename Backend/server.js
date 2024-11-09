@@ -78,7 +78,7 @@ app.use(cors({ origin: allowedOrigins, credentials: true }));
 //     }
 //   }
 // }));
-app.use(express.static(path.join(__dirname, 'Realestate', 'dist')));
+app.use(express.static(path.join(__dirname, '../RealEstate/dist')));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Multer configuration
