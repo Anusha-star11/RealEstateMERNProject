@@ -95,16 +95,16 @@ app.get('/health', (req, res) => {
   });
 });
 
-// Static file serving
-// app.use(express.static(path.join(__dirname, '../RealEstate/dist'), {
-//   setHeaders: (res, filePath) => {
-//     if (filePath.endsWith('.js')) {
-//       res.setHeader('Content-Type', 'application/javascript');
-//     } else if (filePath.endsWith('.css')) {
-//       res.setHeader('Content-Type', 'text/css');
-//     }
-//   }
-// }));
+//Static file serving
+app.use(express.static(path.join(__dirname, '../REALESTATEWEBAPP-copy/RealEstate/dist'), {
+  setHeaders: (res, filePath) => {
+    if (filePath.endsWith('.js')) {
+      res.setHeader('Content-Type', 'application/javascript');
+    } else if (filePath.endsWith('.css')) {
+      res.setHeader('Content-Type', 'text/css');
+    }
+  }
+}));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // API Routes
@@ -126,10 +126,10 @@ app.post('/api/upload', upload.single('backgroundImage'), (req, res) => {
 });
 
 // Catch-all route for client-side routing
-// app.get('*', (req, res) => {
-//   console.log('Serving index.html for path:', req.path);
-//   res.sendFile(path.join(__dirname, '../RealEstate/dist/index.html'));
-// });
+app.get('*', (req, res) => {
+  console.log('Serving index.html for path:', req.path);
+  res.sendFile(path.join(__dirname, '../REALESTATEWEBAPP-copy/RealEstate/dist/index.html'));
+});
 
 // Error handling middleware
 app.use((err, req, res, next) => {
