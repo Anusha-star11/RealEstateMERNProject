@@ -7,7 +7,7 @@ import ProjectDetails from "./Pages/ProjectDetails"; // Import the ProjectDetail
 import AdminPage  from "./Pages/AdminPage.jsx"; 
 import EditSlide from "./Pages/EditSlide.jsx";// Import SlideForm component
 import SlideForm from "./Pages/SlideForm.jsx";
-// import ProjectForm from "./Pages/ProjectForm.jsx";
+import ProjectForm from "./Pages/ProjectForm.jsx";
 import EditProject from "./Pages/EditProject.jsx";
 
 function App() {
