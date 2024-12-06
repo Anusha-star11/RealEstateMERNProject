@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { HashRouter as Router, Routes, Route } from "react-router-dom";
 import Header from "./Components/Header";
 import { Home, Overview, Achievements, Contact, Projects } from './Components/Sections';
 import Footer from "./Components/Footer";
@@ -7,7 +7,7 @@ import ProjectDetails from "./Pages/ProjectDetails"; // Import the ProjectDetail
 import AdminPage  from "./Pages/AdminPage.jsx"; 
 import EditSlide from "./Pages/EditSlide.jsx";// Import SlideForm component
 import SlideForm from "./Pages/SlideForm.jsx";
-import ProjectForm from "./Pages/ProjectForm.jsx";
+// import ProjectForm from "./Pages/ProjectForm.jsx";
 import EditProject from "./Pages/EditProject.jsx";
 
 function App() {
