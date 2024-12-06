@@ -39,7 +39,7 @@ app.use(cookieParser());
 // CORS configuration
 const allowedOrigins = [
   'http://localhost:5173',
-  'https://anusha-star11.github.io/RealEstateApp/'
+  'https://anusha-star11.github.io'
 ];
 
 app.use(cors({ 
