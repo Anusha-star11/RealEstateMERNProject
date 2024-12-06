@@ -12,7 +12,7 @@ import EditProject from "./Pages/EditProject.jsx";
 
 function App() {
   return (
-    <Router basename="/RealEstateApp">
+    <Router>
       <div className="App">
         {/* Header is shown on all pages */}
         <Header />
