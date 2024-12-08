@@ -9,7 +9,6 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "predeploy": "npm run build"
-    
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.6.0",
@@ -41,5 +40,4 @@
     "tailwindcss": "^3.4.13",
     "vite": "^5.4.8"
   }
-  // "homepage": "https://anusha-star11.github.io/RealEstateApp"
 }
