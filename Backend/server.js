@@ -113,6 +113,7 @@ app.use("/api", projectRoutes);
 
 // Upload route
 app.post('/api/upload', upload.single('backgroundImage'), (req, res) => {
+  console.log('Upload request received:', req.file);
   try {
     if (!req.file) {
       return res.status(400).json({ message: 'No file uploaded' });

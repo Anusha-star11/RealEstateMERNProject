@@ -2,20 +2,21 @@ import express from 'express';
 import multer from 'multer';
 import path from 'path';
 import Slide from '../Models/slides.model.js';
+import upload from '../multerConfig.js';
 
 const router = express.Router();
 
 // Configure multer for file uploads
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'uploads');
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + '-' + file.originalname);
-  },
-});
+// const storage = multer.diskStorage({
+//   destination: (req, file, cb) => {
+//     cb(null, 'uploads');
+//   },
+//   filename: (req, file, cb) => {
+//     cb(null, Date.now() + '-' + file.originalname);
+//   },
+// });
 
-const upload = multer({ storage: storage });
+// const upload = multer({ storage: storage });
 
 // Create new slide
 router.post('/slides', upload.single('backgroundImage'), async (req, res) => {

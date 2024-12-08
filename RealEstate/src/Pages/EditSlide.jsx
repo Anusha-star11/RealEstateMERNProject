@@ -61,23 +61,32 @@ const EditSlidesForm = () => {
   };
 
   const handleFileChange = (e, id) => {
+    
     setSelectedFile((prev) => ({
       ...prev,
       [id]: e.target.files[0],
     }));
+    console.log("Selected file for ID:", id, e.target.files[0]);
+    console.log("selectedFile" , selectedFile)
   };
+  
 
   const saveSlide = async (id) => {
     const slideData = formData[id];
+    console.log(formData[id])
     try {
+      // let backgroundImageUrl = slideData.backgroundImageURL;
+      console.log("Option selected for ID:", id, selectedOption[id]);
       if (selectedOption[id] === 'upload' && selectedFile[id]) {
         const uploadData = new FormData();
         uploadData.append('backgroundImage', selectedFile[id]);
-
+        console.log("File being uploaded:", selectedFile[id]);
         const uploadResponse = await axios.post(`${baseURL}/api/upload`, uploadData, {
           headers: { 'Content-Type': 'multipart/form-data' },
         });
+        console.log("Upload API response:", uploadResponse.data);
         slideData.backgroundImage = uploadResponse.data.imageUrl;
+        console.log(slideData.backgroundImage)
       }
 
       await axios.put(`${baseURL}/api/slides/${id}`, {
@@ -85,7 +94,9 @@ const EditSlidesForm = () => {
         subtitle: slideData.subtitle,
         backgroundImage: selectedOption[id] === 'upload' ? slideData.backgroundImage : slideData.backgroundImageURL
       });
+     
 
+      // Update the local state with the new background image
       setFormData((prevData) => ({
         ...prevData,
         [id]: {
@@ -96,10 +107,14 @@ const EditSlidesForm = () => {
 
       setSuccessMessage('Slide updated successfully!');
       setTimeout(() => setSuccessMessage(''), 3000);
+
+      // Refresh slides to ensure consistency
+      fetchSlides();
     } catch (error) {
       console.error('Error saving slide:', error);
     }
   };
+
 
   const deleteSlide = async (id) => {
     try {
